@@ -199,6 +199,12 @@
                 <span>Artikel</span>
             </a>
 
+     
+            <a href="{{ route('admin.testimonials.index') }}" class="menu-item @if(request()->routeIs('admin.testimonials.*')) active @endif">
+                <i class="fas fa-newspaper"></i>
+                <span>Testimonials</span>
+            </a>
+
             <a href="{{ route('admin.careers.index') }}" class="menu-item @if(request()->routeIs('admin.careers.*')) active @endif">
                 <i class="fas fa-briefcase"></i>
                 <span>Karir</span>

@@ -28,7 +28,14 @@ Route::prefix('admin')->group(function () {
             return view('admin.dashboard');
         })->name('admin.dashboard');
 
+        Route::get('popup', [PopupSettingController::class, 'edit'])
+            ->name('popup.edit');
+
+        Route::post('popup', [PopupSettingController::class, 'update'])
+            ->name('popup.update');
+            
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class)->names('admin.articles');
+        Route::resource('testimonials', App\Http\Controllers\Admin\TestimonialController::class)->names('admin.testimonials');
         Route::resource('doctors', App\Http\Controllers\Admin\DoctorController::class)->names('admin.doctors');
         Route::resource('services', App\Http\Controllers\Admin\ServiceController::class)->names('admin.services');
         Route::resource('promos', App\Http\Controllers\Admin\PromoController::class)->names('admin.promos');

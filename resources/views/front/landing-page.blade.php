@@ -722,19 +722,19 @@
 
 @section('content')
 
+    @if($popup && $popup->image)
     <div id="popupOverlay" class="popup-overlay">
-
         <div class="popup-box">
 
-            <!-- Close Button -->
             <div class="popup-close" id="closePopup">×</div>
 
-            <!-- Content -->
-            <img src="https://img.freepik.com/free-photo/woman-looking-phone-car_23-2149026938.jpg" class="popup-image"
-                alt="Alur Rawat Jalan">
+            <img src="{{ asset('storage/'.$popup->image) }}"
+                class="popup-image"
+                alt="Popup Info">
         </div>
-
     </div>
+    @endif
+
 
     <!-- 1. HERO SECTION -->
     <section class="hero-section">
@@ -1300,82 +1300,39 @@
 
             <!-- 9. TESTIMONI (4 CARD VISIBLE) -->
             <section class="testi-section">
-                <div class="container">
-                    <h2 class="fw-bold mb-5 text-center text-white">Dipercaya Banyak Orang</h2>
+                    <div class="container">
+                        <h2 class="fw-bold mb-5 text-center text-white">
+                            Dipercaya Banyak Orang
+                        </h2>
 
-                    <div class="swiper testimonialSwiper">
-                        <div class="swiper-wrapper">
-                            <!-- Testi 1 -->
-                            <div class="swiper-slide">
-                                <div class="testi-bubble">
-                                    "Saat itu kaki dan tangan kanan saya tidak bisa digerakkan. Berkat penanganan yang sigap
-                                    dan
-                                    perawatan intensif di bawah pengawasan dr. Rubiana, kini sedikit-sedikit tangan saya
-                                    sudah bisa
-                                    digerakkan."
-                                </div>
-                                <div class="testi-user">
-                                    <img src="https://randomuser.me/api/portraits/men/44.jpg" class="testi-avatar me-3"
-                                        alt="User">
-                                    <div class="testi-info">
-                                        <h6>Purwanto</h6>
-                                        <small>Pasien Stroke</small>
+                        <div class="swiper testimonialSwiper">
+                            <div class="swiper-wrapper">
+
+                                @foreach($testimonials as $t)
+                                <div class="swiper-slide">
+                                    <div class="testi-bubble">
+                                        "{{ $t->content }}"
+                                    </div>
+
+                                    <div class="testi-user">
+                                        <img src="{{ $t->avatar 
+                                            ? asset('storage/'.$t->avatar)
+                                            : asset('images/default-avatar.png') }}"
+                                            class="testi-avatar me-3" alt="{{ $t->name }}">
+
+                                        <div class="testi-info">
+                                            <h6>{{ $t->name }}</h6>
+                                            <small>{{ $t->title }}</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- Testi 2 -->
-                            <div class="swiper-slide">
-                                <div class="testi-bubble">
-                                    "Siapa sangka, saya mengalami serangan jantung di usia semuda ini. Untunglah bertemu dr.
-                                    Sari
-                                    yang sangat komunikatif. Penanganan tim medis RSPI juga sangat baik, perawatnya ramah
-                                    dan cepat
-                                    tanggap."
-                                </div>
-                                <div class="testi-user">
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="testi-avatar me-3"
-                                        alt="User">
-                                    <div class="testi-info">
-                                        <h6>Fajar</h6>
-                                        <small>Pasien Serangan Jantung</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Testi 3 -->
-                            <div class="swiper-slide">
-                                <div class="testi-bubble">
-                                    "Mencari dokter spesialis anak yang cocok itu seperti mencari jodoh. Makanya begitu
-                                    klik, Darrel
-                                    tidak mau ke lain hati. Selalu pilih dr. Hinky yang sabar dan telaten."
-                                </div>
-                                <div class="testi-user">
-                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="testi-avatar me-3"
-                                        alt="User">
-                                    <div class="testi-info">
-                                        <h6>Triyanawanti, Ibu dari Darrel</h6>
-                                        <small>Pasien DBD</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Testi 4 -->
-                            <div class="swiper-slide">
-                                <div class="testi-bubble">
-                                    "Pelayanan sangat memuaskan, dokter menjelaskan dengan sangat detail dan mudah dipahami.
-                                    Fasilitas klinik juga sangat lengkap dan modern."
-                                </div>
-                                <div class="testi-user">
-                                    <img src="https://randomuser.me/api/portraits/women/86.jpg" class="testi-avatar me-3"
-                                        alt="User">
-                                    <div class="testi-info">
-                                        <h6>Siti Aminah</h6>
-                                        <small>Pasien Katarak</small>
-                                    </div>
-                                </div>
+                                @endforeach
+
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+
 
             <!-- 10. INSTAGRAM FEED -->
             <section class="insta-section">
@@ -1505,7 +1462,7 @@
         });
     </script>
 
-   <!--  <script>
+    <script>
         window.addEventListener("load", function() {
 
             document.getElementById("popupOverlay").style.display = "flex";
@@ -1522,5 +1479,5 @@
                 this.style.display = "none";
             }
         };
-    </script> -->
+    </script>
 @endsection

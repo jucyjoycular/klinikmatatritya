@@ -227,17 +227,14 @@
 
                     @forelse($doctors as $doctor)
                     <div class="col-lg-3 col-md-4 col-sm-6 d-flex justify-content-center">
-                        @include('components.doctor-card', [
-                            'name' => $doctor->name,
-                            'photo' => asset('storage/' . $doctor->photo),
-                            'spec' => $doctor->specialty,
-                            'schedule' => [
-                                'Senin' => '08.00 - 11.00 WIB',
-                                'Selasa' => '10.00 - 14.00 WIB',
-                                'Kamis' => '18.30 - 20.00 WIB',
-                                'Jumat' => '11.30 - 15.00 WIB',
-                            ]
-                        ])
+                       @include('components.doctor-card', [
+                        'name' => $doctor->name,
+                        'photo' => $doctor->photo ? asset('storage/'.$doctor->photo) : null,
+                        'spec' => $doctor->specialty,
+                        'schedule' => $doctor->schedules
+                            ->pluck('hours','day')
+                            ->toArray()
+                    ])
                     </div>
                 @empty
                     <div class="col-12 text-center py-5">

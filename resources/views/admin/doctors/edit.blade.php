@@ -52,6 +52,44 @@
                         <textarea name="bio" class="form-control" rows="4">{{ old('bio', $doctor->bio) }}</textarea>
                     </div>
 
+                    <div class="mb-4">
+                            <label class="form-label fw-bold">Jadwal Praktek</label>
+
+                            <div id="schedule-wrapper">
+                                @foreach($doctor->schedules as $i => $schedule)
+                                    <div class="row mb-2 align-items-center">
+                                        <input type="hidden" name="schedule[{{ $i }}][id]" value="{{ $schedule->id }}">
+
+                                        <div class="col-md-4">
+                                            <input type="text"
+                                                name="schedule[{{ $i }}][day]"
+                                                class="form-control"
+                                                value="{{ $schedule->day }}"
+                                                placeholder="Hari">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text"
+                                                name="schedule[{{ $i }}][hours]"
+                                                class="form-control"
+                                                value="{{ $schedule->hours }}"
+                                                placeholder="Jam">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSchedule()">
+                                + Tambah Jadwal
+                            </button>
+                        </div>
+
                     <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ route('admin.doctors.index') }}" class="btn btn-light">Batal</a>
                         <button type="submit" class="btn btn-primary px-4">Simpan Perubahan</button>
@@ -61,4 +99,28 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+let scheduleIndex = {{ $doctor->schedules->count() }};
+
+function addSchedule() {
+    document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
+        <div class="row mb-2 align-items-center">
+            <div class="col-md-4">
+                <input type="text" name="schedule[${scheduleIndex}][day]" class="form-control" placeholder="Hari">
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="schedule[${scheduleIndex}][hours]" class="form-control" placeholder="Jam">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">✕</button>
+            </div>
+        </div>
+    `);
+    scheduleIndex++;
+}
+</script>
+@endpush
+
 @endsection

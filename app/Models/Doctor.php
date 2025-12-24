@@ -6,5 +6,10 @@ class Doctor extends Model
 {
     use HasFactory;
     protected $fillable = ['name','specialty','photo','phone','bio'];
-    public function schedules(){ return $this->hasMany(Schedule::class); }
+    public function schedulesc(){ return $this->hasMany(Schedule::class); }
+
+    public function schedules()
+{
+    return $this->hasMany(DoctorSchedule::class);
+}
 }

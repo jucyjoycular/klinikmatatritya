@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Promo;
+use App\Models\PopupSetting;
 use App\Models\Service;
 use App\Models\Article;
 use App\Models\Doctor;
+use App\Models\Testimonial;
 use App\Models\SocialFeed;
 use App\Models\Career;
 use App\Models\JobApplication;
@@ -20,7 +22,9 @@ class FrontController extends Controller
         $articles = Article::latest()->take(6)->get();
         $doctors = Doctor::with('schedules')->take(6)->get();
         $promos = Promo::latest()->take(2)->get();
-        return view('front.landing-page', compact('services', 'articles', 'doctors', 'promos'));
+        $popup = PopupSetting::where('is_active',1)->first();
+        $testimonials = Testimonial::latest()->take(6)->get();
+        return view('front.landing-page', compact('services', 'articles', 'doctors', 'promos','testimonials','popup'));
     }
     public function services()
     {
@@ -45,7 +49,7 @@ class FrontController extends Controller
     }
     public function doctors()
     {
-        $doctors = Doctor::all();
+        $doctors = Doctor::with('schedules')->get();
         return view('front.our-doctor', compact('doctors'));
     }
     public function doctor()

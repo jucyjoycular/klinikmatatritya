@@ -46,13 +46,51 @@
                         <textarea name="bio" class="form-control" rows="4" placeholder="Deskripsi singkat tentang dokter...">{{ old('bio') }}</textarea>
                     </div>
 
+                     <div class="mb-3">
+                        <label class="form-label fw-bold">Jadwal Praktek</label>
+
+                        <div id="schedule-wrapper">
+                            <div class="row mb-2">
+                                <div class="col-md-4">
+                                    <input type="text" name="schedule[0][day]" class="form-control" placeholder="Senin">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="schedule[0][hours]" class="form-control" placeholder="08.00 - 11.00 WIB">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSchedule()">
+                            + Tambah Jadwal
+                        </button>
+                    </div>
+
                     <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ route('admin.doctors.index') }}" class="btn btn-light">Batal</a>
                         <button type="submit" class="btn btn-primary px-4">Simpan Dokter</button>
                     </div>
+
+                   
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+let scheduleIndex = 1;
+function addSchedule() {
+    document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <input type="text" name="schedule[${scheduleIndex}][day]" class="form-control" placeholder="Hari">
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="schedule[${scheduleIndex}][hours]" class="form-control" placeholder="Jam">
+            </div>
+        </div>
+    `);
+    scheduleIndex++;
+}
+</script>
 @endsection

@@ -3,7 +3,7 @@
         <div class="row" style="justify-content: center">
             <div class="col-lg-8 pe-lg-0" style="max-width: 650px">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.652877546416!2d112.7554!3d-7.2803!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMTYnNDkuMSJTIDExMsKwNDUnMTkuNCJF!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.488877823487!2d112.75739317527297!3d-7.29884047175015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fbacff99559b%3A0x9305d3b39899b192!2sKlinik%20Mata%20Tritya%20%7C%20Dokter%20Spesialis%20Mata%20Surabaya!5e0!3m2!1sen!2sid!4v1766554452732!5m2!1sen!2sid"
                     width="100%" height="100%" class="map-iframe" allowfullscreen="" loading="lazy"></iframe>
             </div>
             <div class="col-lg-4 ps-lg-0" style="max-width: 650px">
