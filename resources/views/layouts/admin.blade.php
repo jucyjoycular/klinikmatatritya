@@ -17,11 +17,14 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94NDTFH6KV"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-      gtag('config', 'G-94NDTFH6KV');
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-94NDTFH6KV');
     </script>
 
 
@@ -111,7 +114,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
             position: sticky;
             top: 0;
             z-index: 999;
@@ -126,7 +129,7 @@
             .sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .sidebar.show {
                 transform: translateX(0);
             }
@@ -168,71 +171,81 @@
                 <span class="fw-bold text-dark fs-5">Admin Panel</span>
             </div>
         </div>
-        
+
         <nav class="sidebar-menu">
-            <a href="{{ route('admin.dashboard') }}" class="menu-item @if(request()->routeIs('admin.dashboard')) active @endif">
+            <a href="{{ route('admin.dashboard') }}" class="menu-item @if (request()->routeIs('admin.dashboard')) active @endif">
                 <i class="fas fa-th-large"></i>
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('popup.edit') }}" class="menu-item @if(request()->routeIs('admin.popup.*')) active @endif">
+            <a href="{{ route('popup.edit') }}" class="menu-item @if (request()->routeIs('admin.popup.*')) active @endif">
                 <i class="fas fa-user-md"></i>
                 <span>Main Popup Home</span>
             </a>
 
-            <a href="{{ route('admin.doctors.index') }}" class="menu-item @if(request()->routeIs('admin.doctors.*')) active @endif">
+            <a href="{{ route('admin.doctors.index') }}"
+                class="menu-item @if (request()->routeIs('admin.doctors.*')) active @endif">
                 <i class="fas fa-user-md"></i>
                 <span>Dokter</span>
             </a>
 
-            <a href="{{ route('admin.services.index') }}" class="menu-item @if(request()->routeIs('admin.services.*')) active @endif">
+            <a href="{{ route('admin.services.index') }}"
+                class="menu-item @if (request()->routeIs('admin.services.*')) active @endif">
                 <i class="fas fa-hand-holding-medical"></i>
                 <span>Layanan</span>
             </a>
 
-            <a href="{{ route('admin.promos.index') }}" class="menu-item @if(request()->routeIs('admin.promos.*')) active @endif">
+            <a href="{{ route('admin.promos.index') }}"
+                class="menu-item @if (request()->routeIs('admin.promos.*')) active @endif">
                 <i class="fas fa-tags"></i>
                 <span>Promo</span>
             </a>
-            <a href="{{ route('admin.social-feeds.index') }}" class="menu-item @if(request()->routeIs('admin.social-feeds.*')) active @endif">
+            <a href="{{ route('admin.social-feeds.index') }}"
+                class="menu-item @if (request()->routeIs('admin.social-feeds.*')) active @endif">
                 <i class="fab fa-instagram"></i>
                 <span>Social Feed</span>
             </a>
 
-            <a href="{{ route('admin.articles.index') }}" class="menu-item @if(request()->routeIs('admin.articles.*')) active @endif">
+            <a href="{{ route('admin.articles.index') }}"
+                class="menu-item @if (request()->routeIs('admin.articles.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Artikel</span>
             </a>
 
-     
-            <a href="{{ route('admin.testimonials.index') }}" class="menu-item @if(request()->routeIs('admin.testimonials.*')) active @endif">
+
+            {{-- <a href="{{ route('admin.testimonials.index') }}" class="menu-item @if (request()->routeIs('admin.testimonials.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Testimonials</span>
-            </a>
+            </a> --}}
 
-            <a href="{{ route('admin.careers.index') }}" class="menu-item @if(request()->routeIs('admin.careers.*')) active @endif">
+            <a href="{{ route('admin.careers.index') }}"
+                class="menu-item @if (request()->routeIs('admin.careers.*')) active @endif">
                 <i class="fas fa-briefcase"></i>
                 <span>Karir</span>
             </a>
 
-            <a href="{{ route('admin.job-applications.index') }}" class="menu-item @if(request()->routeIs('admin.job-applications.*')) active @endif">
+            <a href="{{ route('admin.job-applications.index') }}"
+                class="menu-item @if (request()->routeIs('admin.job-applications.*')) active @endif">
                 <i class="fas fa-file-alt"></i>
                 <span>Lamaran Masuk</span>
             </a>
 
-             <a href="{{ route('admin.settings.analytics') }}" class="menu-item @if(request()->routeIs('admin.analytics.*')) active @endif">
+            <a href="{{ route('admin.settings.analytics') }}"
+                class="menu-item @if (request()->routeIs('admin.analytics.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Analytics</span>
             </a>
-            
-            <a href="{{ route('admin.settings.mail') }}" class="menu-item @if(request()->routeIs('admin.settings.mail')) active @endif">
+
+            <a href="{{ route('admin.settings.mail') }}"
+                class="menu-item @if (request()->routeIs('admin.settings.mail')) active @endif">
                 <i class="fas fa-envelope"></i>
                 <span>Mail Settings</span>
             </a>
         </nav>
 
-        <div class="p-3 border-top">
-            <a href="#" class="d-flex align-items-center text-decoration-none text-danger px-3 py-2 rounded hover-bg-light">
+        <div class="border-top p-3">
+            <a href="#"
+                class="d-flex align-items-center text-decoration-none text-danger hover-bg-light rounded px-3 py-2">
                 <i class="fas fa-sign-out-alt me-2"></i>
                 <span>Logout</span>
             </a>
@@ -246,22 +259,26 @@
             <button class="btn btn-link text-dark d-lg-none" id="sidebarToggle">
                 <i class="fas fa-bars fs-4"></i>
             </button>
-            
-            <h5 class="mb-0 fw-bold d-none d-lg-block">@yield('header_title', 'Dashboard')</h5>
+
+            <h5 class="fw-bold d-none d-lg-block mb-0">@yield('header_title', 'Dashboard')</h5>
 
             <div class="dropdown">
-                <button class="btn d-flex align-items-center gap-2 border-0 bg-transparent" type="button" data-bs-toggle="dropdown">
-                    <div class="text-end d-none d-md-block">
+                <button class="btn d-flex align-items-center gap-2 border-0 bg-transparent" type="button"
+                    data-bs-toggle="dropdown">
+                    <div class="d-none d-md-block text-end">
                         <div class="fw-bold small">Admin User</div>
                         <div class="text-muted" style="font-size: 0.75rem;">admin@tritya.com</div>
                     </div>
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 40px; height: 40px;">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold"
+                        style="width: 40px; height: 40px;">
                         A
                     </div>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
                     <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
                 </ul>
             </div>
@@ -278,7 +295,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');

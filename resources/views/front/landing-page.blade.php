@@ -417,6 +417,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            text-decoration: none;
         }
 
         /* --- 6. BERITA --- */
@@ -573,21 +574,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Background Image Overlay (Optional, based on reference) */
-        /* .testi-section::before {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                content: "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                position: absolute;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                top: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                left: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                right: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bottom: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-image: url('https://img.freepik.com/free-photo/doctor-nurses-special-equipment_23-2148980721.jpg');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-size: cover;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-position: center;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                opacity: 0.1;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                pointer-events: none;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
 
         .testi-bubble {
             background: white;
@@ -1039,9 +1025,9 @@
                     <!-- Pagination -->
                     <div class="d-flex justify-content-end mt-4 gap-2">
                         <!--  <button class="nav-circle-btn equip-prev bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                                                                                                                                    class="fas fa-chevron-left"></i></button>
-                                                                                                                                                            <button class="nav-circle-btn equip-next bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                                                                                                                                    class="fas fa-chevron-right"></i></button> -->
+                                                                                                                                                                                                                                                                                                                                                                                                class="fas fa-chevron-left"></i></button>
+                                                                                                                                                                                                                                                                                                                                                                                        <button class="nav-circle-btn equip-next bg-white shadow-sm" style="width:40px;height:40px;"><i
+                                                                                                                                                                                                                                                                                                                                                                                                class="fas fa-chevron-right"></i></button> -->
                     </div>
                 </div>
             </div>
@@ -1065,8 +1051,8 @@
                             @forelse($promos as $promo)
                                 <div class="swiper-slide">
                                     <div class="promo-card text-start">
-                                        <img src="{{ $promo->image ? asset('storage/' . $promo->image) : 'https://via.placeholder.com/600x400' }}"
-                                            class="promo-img" alt="{{ $promo->title }}">
+                                        <img src="{{ asset('storage/' . $promo->image) }}" class="promo-img"
+                                            alt="{{ $promo->title }}">
                                         <h5 class="fw-bold mb-2">{{ $promo->title }}</h5>
                                         <div class="promo-price-tag">
                                             @if ($promo->price)
@@ -1109,8 +1095,8 @@
                         @forelse($articles->take(3) as $article)
                             <div class="col-lg-4">
                                 <div class="card h-100 border-0">
-                                    <img src="{{ $article->image ? asset('storage/' . $article->image) : 'https://via.placeholder.com/600x400' }}"
-                                        class="news-img" alt="{{ $article->title }}">
+                                    <img src="{{ asset('storage/' . $article->image) }}" class="news-img"
+                                        alt="{{ $article->title }}">
                                     <div class="card-body">
                                         <span class="news-date">{{ $article->created_at->format('d F Y') }}</span>
                                         <h5 class="fw-bold mb-3 mt-2">{{ Str::limit($article->title, 50) }}</h5>
@@ -1449,25 +1435,8 @@
                     </h2>
 
                     <div class="swiper testimonialSwiper">
-                        <div class="swiper-wrapper">
+                        <div class="swiper-wrapper" id="testimonial-swiper">
 
-                            @foreach ($testimonials as $t)
-                                <div class="swiper-slide">
-                                    <div class="testi-bubble">
-                                        "{{ $t->content }}"
-                                    </div>
-
-                                    <div class="testi-user">
-                                        <img src="{{ $t->avatar ? asset('storage/' . $t->avatar) : asset('images/default-avatar.png') }}"
-                                            class="testi-avatar me-3" alt="{{ $t->name }}">
-
-                                        <div class="testi-info">
-                                            <h6>{{ $t->name }}</h6>
-                                            <small>{{ $t->title }}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
 
                         </div>
                     </div>
@@ -1502,6 +1471,7 @@
 @endsection
 
 @section('scripts')
+    <script src="https://elfsightcdn.com/platform.js" async></script>
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
@@ -1609,6 +1579,10 @@
             slidesPerView: 1,
             spaceBetween: 20,
             loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
             breakpoints: {
                 640: {
                     slidesPerView: 1
@@ -1700,5 +1674,50 @@
                 });
             });
         });
+    </script>
+
+    <script>
+        let googleReviews = [];
+
+        const getGoogleReviews = async () => {
+            try {
+                const response = await fetch(
+                    `https://service-reviews-ultimate.elfsight.com/data/reviews?uris%5B%5D=ChIJm1WZ_6z71y0RkrGZmLPTBZM&filter_content=text_required&min_rating=5&page_length=100&order=date&order_seed=1767543630397`, {
+                        "headers": {
+                            "accept": "application/json",
+                        },
+                    });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                googleReviews = data.result.data;
+            } catch (error) {
+                console.error("Gagal mengambil data:", error);
+            }
+
+            const testimonialSwiper = document.getElementById('testimonial-swiper');
+            testimonialSwiper.innerHTML = googleReviews.map(review => {
+                return `
+                    <div class="swiper-slide">
+                        <div class="testi-bubble">
+                            <p>${review.text}</p>
+                        </div>
+                        <div class="testimonial-info">
+                            <div class="testi-user">
+                                <img src="${review.reviewer_picture_url}"  class="testi-avatar me-3" alt="User">
+                                <div class="testi-info">
+                                    <h6>${review.reviewer_name}</h6>
+                                    <small>${review.supplier} review</small>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        getGoogleReviews();
     </script>
 @endsection

@@ -54,6 +54,7 @@
             align-items: center;
             border-radius: 10px;
             margin-top: 15px;
+            text-decoration: none;
         }
 
         .btn-promo:hover {
@@ -111,8 +112,8 @@
             transform: rotate(0deg);
             /* Panah ke bawah saat buka (atau bisa diset hidden jika desain meminta) */
             /* Sesuai gambar, panah hilang saat aktif diganti teks deskripsi.
-                                           Tapi untuk UX yang baik, kita biarkan icon rotate atau kita hide.
-                                           Di sini saya akan rotate agar user tau bisa ditutup. */
+                                               Tapi untuk UX yang baik, kita biarkan icon rotate atau kita hide.
+                                               Di sini saya akan rotate agar user tau bisa ditutup. */
         }
 
         .accordion-body {
