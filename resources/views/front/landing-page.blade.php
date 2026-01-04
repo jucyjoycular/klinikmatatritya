@@ -350,14 +350,6 @@
 
         /* --- MID WRAPPER --- */
         .mid-container {
-            /* background-image: url('/img/bg-footer.png');
-                                                                                                                                                                                                                                    background-size: cover;
-                                                                                                                                                                                                                                    background-position: center;
-                                                                                                                                                                                                                                    background-repeat: no-repeat;
-                                                                                                                                                                                                                                    background-blend-mode: multiply;
-                                                                                                                                                                                                                                    background-color: rgba(255, 255, 255, 0.5);
-                                                                                                                                                                                                                                    background-blend-mode: overlay; */
-            /* background-color: #dbeafe; */
             padding-top: 100px;
         }
 
@@ -584,18 +576,18 @@
 
         /* Background Image Overlay (Optional, based on reference) */
         /* .testi-section::before {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                content: "";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                position: absolute;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                top: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                left: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                right: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bottom: 0;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-image: url('https://img.freepik.com/free-photo/doctor-nurses-special-equipment_23-2148980721.jpg');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-size: cover;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-position: center;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                opacity: 0.1;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                pointer-events: none;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                content: "";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                position: absolute;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                top: 0;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                left: 0;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                right: 0;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bottom: 0;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-image: url('https://img.freepik.com/free-photo/doctor-nurses-special-equipment_23-2148980721.jpg');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-size: cover;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                background-position: center;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                opacity: 0.1;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                pointer-events: none;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
 
         .testi-bubble {
             background: white;
@@ -1047,9 +1039,9 @@
                     <!-- Pagination -->
                     <div class="d-flex justify-content-end mt-4 gap-2">
                         <!--  <button class="nav-circle-btn equip-prev bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                                                                                                                    class="fas fa-chevron-left"></i></button>
-                                                                                                                                            <button class="nav-circle-btn equip-next bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                                                                                                                    class="fas fa-chevron-right"></i></button> -->
+                                                                                                                                                                    class="fas fa-chevron-left"></i></button>
+                                                                                                                                                            <button class="nav-circle-btn equip-next bg-white shadow-sm" style="width:40px;height:40px;"><i
+                                                                                                                                                                    class="fas fa-chevron-right"></i></button> -->
                     </div>
                 </div>
             </div>
@@ -1519,7 +1511,7 @@
 
     <script>
         const specSwiper = new Swiper('.specSwiper', {
-            slidesPerView: 'auto', // ⬅️ PENTING
+            slidesPerView: 'auto',
             spaceBetween: 20,
             loop: true,
             observer: true,
@@ -1648,5 +1640,65 @@
                 this.style.display = "none";
             }
         };
+    </script>
+
+    <script>
+        // FAQ Topic Switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const topicItems = document.querySelectorAll('.faq-topic-item');
+            const contentSections = document.querySelectorAll('.faq-content-section');
+
+            topicItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all topics
+                    topicItems.forEach(t => t.classList.remove('active'));
+
+                    // Add active class to clicked topic
+                    this.classList.add('active');
+
+                    // Get the topic name
+                    const topic = this.getAttribute('data-topic');
+
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Show the selected content section
+                    const targetSection = document.getElementById('content-' + topic);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+
+                    // Close all open accordions in the new section
+                    const openAccordions = targetSection.querySelectorAll('.collapse.show');
+                    openAccordions.forEach(accordion => {
+                        const bsCollapse = new bootstrap.Collapse(accordion, {
+                            toggle: false
+                        });
+                        bsCollapse.hide();
+                    });
+                });
+            });
+
+            // FAQ Accordion Toggle
+            const accordionButtons = document.querySelectorAll('.faq-accordion-button');
+
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const target = this.getAttribute('data-bs-target');
+                    const collapseElement = document.querySelector(target);
+
+                    if (collapseElement) {
+                        const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                            toggle: true
+                        });
+                    }
+
+                    // Toggle collapsed class
+                    this.classList.toggle('collapsed');
+                });
+            });
+        });
     </script>
 @endsection
