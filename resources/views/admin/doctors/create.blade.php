@@ -88,12 +88,25 @@
                             <div id="schedule-wrapper">
                                 <div class="row mb-2">
                                     <div class="col-md-4">
-                                        <input type="text" name="schedule[0][day]" class="form-control"
-                                            placeholder="Senin">
+                                        <select name="schedule[0][day]" class="form-select">
+                                            <option value="">Pilih Hari</option>
+                                            <option value="Senin">Senin</option>
+                                            <option value="Selasa">Selasa</option>
+                                            <option value="Rabu">Rabu</option>
+                                            <option value="Kamis">Kamis</option>
+                                            <option value="Jumat">Jumat</option>
+                                            <option value="Sabtu">Sabtu</option>
+                                            <option value="Minggu">Minggu</option>
+                                        </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <input type="text" name="schedule[0][hours]" class="form-control"
-                                            placeholder="08.00 - 11.00 WIB">
+                                    <div class="col-md-3">
+                                        <input type="time" name="schedule[0][start]" class="form-control"
+                                            step="200" placeholder="Jam buka" onchange="updateScheduleHours(this)">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="time" name="schedule[0][end]" class="form-control"
+                                            step="900" placeholder="Jam tutup" onchange="updateScheduleHours(this)">
+                                        <input type="hidden" name="schedule[0][hours]" class="schedule-hours">
                                     </div>
                                 </div>
                             </div>
@@ -118,14 +131,45 @@
     <script>
         let scheduleIndex = 1;
 
+        const dayOptions = `
+            <option value="">Pilih Hari</option>
+            <option value="Senin">Senin</option>
+            <option value="Selasa">Selasa</option>
+            <option value="Rabu">Rabu</option>
+            <option value="Kamis">Kamis</option>
+            <option value="Jumat">Jumat</option>
+            <option value="Sabtu">Sabtu</option>
+            <option value="Minggu">Minggu</option>
+        `;
+
+        function updateScheduleHours(el) {
+            const row = el.closest('.row');
+            if (!row) return;
+            const start = row.querySelector('input[name*="[start]"]')?.value || '';
+            const end = row.querySelector('input[name*="[end]"]')?.value || '';
+            const hoursField = row.querySelector('.schedule-hours');
+
+            if (!hoursField) return;
+            hoursField.value = start && end ? `${start} - ${end}` : '';
+        }
+
         function addSchedule() {
             document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
         <div class="row mb-2">
             <div class="col-md-4">
-                <input type="text" name="schedule[${scheduleIndex}][day]" class="form-control" placeholder="Hari">
+                <select name="schedule[${scheduleIndex}][day]" class="form-select">
+                    ${dayOptions}
+                </select>
             </div>
-            <div class="col-md-6">
-                <input type="text" name="schedule[${scheduleIndex}][hours]" class="form-control" placeholder="Jam">
+            <div class="col-md-3">
+                <input type="time" name="schedule[${scheduleIndex}][start]" class="form-control" step="900" placeholder="Jam buka" onchange="updateScheduleHours(this)">
+            </div>
+            <div class="col-md-3">
+                <input type="time" name="schedule[${scheduleIndex}][end]" class="form-control" step="900" placeholder="Jam tutup" onchange="updateScheduleHours(this)">
+                <input type="hidden" name="schedule[${scheduleIndex}][hours]" class="schedule-hours">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">✕</button>
             </div>
         </div>
     `);

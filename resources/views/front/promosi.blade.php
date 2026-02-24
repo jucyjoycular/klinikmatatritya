@@ -22,6 +22,7 @@
     border-radius: 16px;
     padding: 40px;
     margin-top: -80px;
+    margin-bottom: 80px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.08);
 }
 
@@ -35,8 +36,12 @@
 
 .sidebar-img {
     width: 100%;
+    height: 150px;
     border-radius: 12px;
     margin-bottom: 15px;
+    object-fit: cover;
+    background: #f8f9fa;
+    display: block;
 }
 
 /* ========= TABLE ========= */
@@ -94,11 +99,11 @@
 
 <div class="promo-hero">
     <div class="container">
-        <h1 class="promo-title">Promo Pemeriksaan Dasar Glaukoma</h1>
-        <p class="mt-3" style="max-width: 680px;">
+        <h1 class="promo-title">{{ $section->title }}</h1>
+        {{-- <p class="mt-3" style="max-width: 680px;">
             Dalam rangka memperingati Hari Glaukoma Sedunia pada 12 Maret 2025, Klinik Mata Tritya menghadirkan promo
             khusus pemeriksaan glaukoma sebagai bagian dari program kerja Marketing & Development.
-        </p>
+        </p> --}}
     </div>
 </div>
 
@@ -109,34 +114,43 @@
         <div class="col-lg-8">
             <div class="promo-card">
 
-                <h4 class="fw-bold mb-3">Periode Promo</h4>
-                <p>Maret – April 2025</p>
+                {{-- <h4 class="fw-bold mb-3">Periode Promo</h4>
+                <p>Maret – April 2025</p> --}}
 
-                <p>Berlaku untuk seluruh pasien umum yang ingin melakukan pemeriksaan glaukoma dengan rincian berikut:</p>
+                <p>{{ $section->content }}</p>
 
                 <table class="promo-table">
-                    <thead>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Pemeriksaan</th>
+                        <th>Harga Normal</th>
+                        <th>Harga Promo</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($section->items as $index => $item)
                         <tr>
-                            <th>No</th>
-                            <th>Pemeriksaan</th>
-                            <th>Harga Normal</th>
-                            <th>Harga Promo</th>
-                            <th>Keterangan</th>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $item->pemeriksaan }}</td>
+                            <td>Rp {{ number_format($item->harga_normal, 0, ',', '.') }}</td>
+                            <td>
+                                @if($item->harga_promo)
+                                    Rp {{ number_format($item->harga_promo, 0, ',', '.') }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>{{ $item->keterangan ?? '-' }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>1</td><td>Administrasi</td><td>Rp 40.000</td><td>Rp 0</td><td></td></tr>
-                        <tr><td>2</td><td>Pemeriksaan Dasar</td><td>Rp 90.000</td><td>Rp 50.000</td><td>Promo Pemeriksaan Dasar</td></tr>
-                        <tr><td>3</td><td>Konsultasi Dokter</td><td>Rp 150.000</td><td>Rp 90.000</td><td></td></tr>
-                        <tr><td>4</td><td>NCT 2 Mata</td><td>Rp 75.000</td><td>Rp 50.000</td><td>Promo Pemeriksaan Dasar</td></tr>
-                        <tr><td>5</td><td>OCT 2 Mata</td><td>Rp 750.000</td><td>Rp 650.000</td><td>Promo Pemeriksaan Dasar</td></tr>
-                        <tr><td>6</td><td>Humphrey 2 Mata</td><td>Rp 300.000</td><td>Rp 200.000</td><td>Promo Penunjang</td></tr>
-                    </tbody>
+                    @endforeach
+                </tbody>
                 </table>
 
                 <br>
 
-                <h4 class="fw-bold">Syarat dan Ketentuan Promo</h4>
+                {{-- <h4 class="fw-bold">Syarat dan Ketentuan Promo</h4>
                 <ul>
                     <li>Berlaku untuk pasien umum (non-asuransi).</li>
                     <li>Jadwal pemeriksaan harus berada pada periode promo.</li>
@@ -156,7 +170,7 @@
                     WhatsApp: 0821-1211-0048 <br>
                     Telp: 031-5020249 / 031-5020249 <br>
                     Lokasi: Ruko Bratara Plaza, Jl Barata Jaya No.58 Blok A3, Surabaya
-                </p>
+                </p> --}}
 
             </div>
         </div>
@@ -164,7 +178,12 @@
         <!-- RIGHT SIDEBAR -->
         <div class="col-lg-4">
             <div class="sidebar-card">
-                <img src="{{ asset('img/bg_jabat.png') }}" class="sidebar-img">
+                @php
+                    $sidebarImage = (!empty($section->image) && Storage::disk('public')->exists($section->image))
+                        ? asset('storage/' . $section->image)
+                        : asset('img/background.jpg');
+                @endphp
+                <img src="{{ $sidebarImage }}" class="sidebar-img" alt="{{ $section->title }}">
 
                 <h5 class="fw-bold">Paket Pemeriksaan Dasar Glaukoma</h5>
                 <p class="text-primary fw-bold" style="font-size: 1.3rem;">Rp 250.000</p>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Ko - Klinik Mata Tritya')
+@section('title', 'Pengaturan Umum - Klinik Mata Tritya')
 
 @section('header_title', 'Pengaturan Umum')
 
@@ -33,6 +33,55 @@
                                     Jika diaktifkan, pengunjung akan melihat halaman "Sedang Renovasi". Admin tetap dapat
                                     mengakses panel ini.
                                 </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-primary mb-3">Pengaturan Jenis Font</h6>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Pilih Font Website</label>
+                                    <select class="form-select" name="website_font" id="website_font">
+                                        <!-- System Fonts -->
+                                        <optgroup label="System Fonts">
+                                            @foreach ($systemfonts as $font)
+                                                <option value="{{ $font }}" {{ $website_font === $font ? 'selected' : '' }}>
+                                                    {{ $font }}
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+
+                                        <!-- Google Fonts -->
+                                        <optgroup label="Google Fonts">
+                                            @foreach ($googlefonts as $font)
+                                                <option value="{{ $font }}" {{ $website_font === $font ? 'selected' : '' }}>
+                                                    {{ $font }}
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    </select>
+
+                                    <div class="form-text text-muted small mt-2">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Font yang anda pilih akan diterapkan ke seluruh website. 
+                                        Pastikan untuk memilih font yang mudah dibaca dan sesuai dengan identitas klinik.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label mb-2">Preview Font</label>
+                                <div
+                                    class="border rounded p-4 bg-light"
+                                    id="font-preview-box"
+                                    style="min-height: 120px; display: flex; align-items: center; font-family: '{{ $website_font }}', sans-serif;">
+                                    <p class="mb-0 fs-5" id="font-preview-text">
+                                        Lihat dunia dengan lebih jelas bersama Klinik Mata Tritya. Kami hadir untuk memberikan perawatan mata terbaik dengan sentuhan profesionalisme dan kehangatan.
+                                    </p>
+                                </div> 
                             </div>
                         </div>
 
@@ -139,6 +188,59 @@
                         </div>
 
                         <hr>
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3">Tautan Media Sosial (Footer)</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fab fa-facebook"></i> Facebook
+                                        </label>
+                                        <input type="url" class="form-control" name="facebook"
+                                            value="{{ old('facebook', $facebook) }}"
+                                            placeholder="Contoh: https://facebook.com/nama">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fab fa-instagram"></i> Instagram
+                                        </label>
+                                        <input type="url" class="form-control" name="instagram"
+                                            value="{{ old('instagram', $instagram) }}"
+                                            placeholder="Contoh: https://instagram.com/nama">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fab fa-youtube"></i> YouTube
+                                        </label>
+                                        <input type="url" class="form-control" name="youtube"
+                                            value="{{ old('youtube', $youtube) }}"
+                                            placeholder="Contoh: https://youtube.com/@nama">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">
+                                            <i class="fab fa-tiktok"></i> TikTok
+                                        </label>
+                                        <input type="url" class="form-control" name="tiktok"
+                                            value="{{ old('tiktok', $tiktok) }}"
+                                            placeholder="Contoh: https://tiktok.com/@nama">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Masukkan URL lengkap media sosial yang akan ditampilkan di footer website.
+                            </div>
+                        </div>
+
+                        <hr>
                         <div class="row align-items-start mb-4">
                             <h6 class="fw-bold text-primary mb-3">Menu "Biarkan Kami Membantu Anda"</h6>
                             <div class="col-md-6">
@@ -172,22 +274,35 @@
 @endsection
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const officeNameInput = document.getElementById('office_name');
-            const mapPreview = document.getElementById('map-preview');
-            const apiKey = 'AIzaSyB2NIWI3Tv9iDPrlnowr_0ZqZWoAQydKJU';
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 
-            let timeout = null;
+    // === Google Maps Preview ===
+    const officeNameInput = document.getElementById('office_name');
+    const mapPreview = document.getElementById('map-preview');
+    const apiKey = 'AIzaSyB2NIWI3Tv9iDPrlnowr_0ZqZWoAQydKJU';
 
-            officeNameInput.addEventListener('input', function() {
-                clearTimeout(timeout);
-                timeout = setTimeout(function() {
-                    const query = encodeURIComponent(officeNameInput.value);
-                    mapPreview.src =
-                        `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}`;
-                }, 1000); // Delay 1 second to avoid spamming calls
-            });
+    let timeout = null;
+
+    if (officeNameInput) {
+        officeNameInput.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                const query = encodeURIComponent(officeNameInput.value);
+                mapPreview.src =
+                    `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}`;
+            }, 1000);
         });
-    </script>
+    }
+
+    // === Font Preview ===
+    const fontSelect = document.getElementById('website_font');
+    const previewBox = document.getElementById('font-preview-box');
+
+    fontSelect.addEventListener('change', function() {
+        previewBox.style.fontFamily = `'${this.value}', sans-serif`;
+    });
+
+});
+</script>
 @endpush

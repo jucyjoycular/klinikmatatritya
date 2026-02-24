@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel - Klinik Mata Tritya')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('img/favicon/favicon-96x96.png') }}" sizes="96x96" />
@@ -295,6 +296,11 @@
                 <i class="fas fa-cogs"></i>
                 <span>General Settings</span>
             </a>
+            <a href="{{ route('admin.settings.footer') }}"
+                class="menu-item @if (request()->routeIs('admin.settings.footer')) active @endif">
+                <i class="fa-solid fa-gear"></i>
+                <span>Footer Settings</span>
+            </a>
         </nav>
 
         <div class="border-top p-3">
@@ -377,6 +383,7 @@
         sidebarOverlay.addEventListener('click', toggleSidebar);
     </script>
     @yield('scripts')
+    @stack('scripts')
 </body>
 
 </html>

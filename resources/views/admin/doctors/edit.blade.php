@@ -94,18 +94,40 @@
 
                             <div id="schedule-wrapper">
                                 @foreach ($doctor->schedules as $i => $schedule)
+                                    @php
+                                        $hoursRaw = $schedule->hours ?? '';
+                                        $normalized = trim(str_ireplace('wib', '', $hoursRaw));
+                                        $parts = array_map('trim', preg_split('/-/', $normalized));
+                                        $startTime = str_replace('.', ':', $parts[0] ?? '');
+                                        $endTime = str_replace('.', ':', $parts[1] ?? '');
+                                    @endphp
                                     <div class="row align-items-center mb-2">
                                         <input type="hidden" name="schedule[{{ $i }}][id]"
                                             value="{{ $schedule->id }}">
 
                                         <div class="col-md-4">
-                                            <input type="text" name="schedule[{{ $i }}][day]"
-                                                class="form-control" value="{{ $schedule->day }}" placeholder="Hari">
+                                            <select name="schedule[{{ $i }}][day]" class="form-select">
+                                                <option value="">Pilih Hari</option>
+                                                <option value="Senin" @selected($schedule->day === 'Senin')>Senin</option>
+                                                <option value="Selasa" @selected($schedule->day === 'Selasa')>Selasa</option>
+                                                <option value="Rabu" @selected($schedule->day === 'Rabu')>Rabu</option>
+                                                <option value="Kamis" @selected($schedule->day === 'Kamis')>Kamis</option>
+                                                <option value="Jumat" @selected($schedule->day === 'Jumat')>Jumat</option>
+                                                <option value="Sabtu" @selected($schedule->day === 'Sabtu')>Sabtu</option>
+                                                <option value="Minggu" @selected($schedule->day === 'Minggu')>Minggu</option>
+                                            </select>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <input type="text" name="schedule[{{ $i }}][hours]"
-                                                class="form-control" value="{{ $schedule->hours }}" placeholder="Jam">
+                                        <div class="col-md-3">
+                                            <input type="time" name="schedule[{{ $i }}][start]" class="form-control"
+                                                step="900" value="{{ $startTime }}" onchange="updateScheduleHours(this)">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input type="time" name="schedule[{{ $i }}][end]" class="form-control"
+                                                step="900" value="{{ $endTime }}" onchange="updateScheduleHours(this)">
+                                            <input type="hidden" name="schedule[{{ $i }}][hours]" class="schedule-hours"
+                                                value="{{ $schedule->hours }}">
                                         </div>
 
                                         <div class="col-md-2">
@@ -136,15 +158,42 @@
     @push('scripts')
         <script>
             let scheduleIndex = {{ $doctor->schedules->count() }};
+            const dayOptions = `
+                <option value="">Pilih Hari</option>
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jumat">Jumat</option>
+                <option value="Sabtu">Sabtu</option>
+                <option value="Minggu">Minggu</option>
+            `;
+
+            function updateScheduleHours(el) {
+                const row = el.closest('.row');
+                if (!row) return;
+                const start = row.querySelector('input[name*="[start]"]')?.value || '';
+                const end = row.querySelector('input[name*="[end]"]')?.value || '';
+                const hoursField = row.querySelector('.schedule-hours');
+
+                if (!hoursField) return;
+                hoursField.value = start && end ? `${start} - ${end}` : '';
+            }
 
             function addSchedule() {
                 document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
         <div class="row mb-2 align-items-center">
             <div class="col-md-4">
-                <input type="text" name="schedule[${scheduleIndex}][day]" class="form-control" placeholder="Hari">
+                <select name="schedule[${scheduleIndex}][day]" class="form-select">
+                    ${dayOptions}
+                </select>
             </div>
-            <div class="col-md-6">
-                <input type="text" name="schedule[${scheduleIndex}][hours]" class="form-control" placeholder="Jam">
+            <div class="col-md-3">
+                <input type="time" name="schedule[${scheduleIndex}][start]" class="form-control" step="900" onchange="updateScheduleHours(this)">
+            </div>
+            <div class="col-md-3">
+                <input type="time" name="schedule[${scheduleIndex}][end]" class="form-control" step="900" onchange="updateScheduleHours(this)">
+                <input type="hidden" name="schedule[${scheduleIndex}][hours]" class="schedule-hours">
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.parentElement.remove()">✕</button>

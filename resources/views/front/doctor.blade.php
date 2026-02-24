@@ -333,6 +333,33 @@
             </div>
         @endif
 
+        <!-- Section: Jadwal Praktek Lengkap -->
+        <div class="content-card">
+            <h3 class="section-title">Jadwal Praktek Lengkap</h3>
+            @if ($doctor->schedules && $doctor->schedules->count())
+                <div class="table-responsive">
+                    <table class="table-schedule table-hover table">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Jam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($doctor->schedules as $schedule)
+                                <tr>
+                                    <td>{{ $schedule->day }}</td>
+                                    <td>{{ $schedule->hours }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-muted">Jadwal belum tersedia.</p>
+            @endif
+        </div>
+
         {{-- <!-- Section: JADWAL DOKTER (Dynamic Ready) -->
         <div class="content-card">
             <div class="d-flex justify-content-between align-items-center mb-4">

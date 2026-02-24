@@ -356,6 +356,21 @@
         <section class="faq-section" id="faq">
             <div class="container">
                 <h2 class="section-title mb-5">F.A.Q</h2>
+
+                {{-- Search FAQ --}}
+                <div class="faq-search" style="position: relative; max-width: 520px; margin-bottom: 20px;">
+                    <span class="faq-search-icon-wrap"
+                        style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 10px; background: #dbeafe; color: #2d4cc8; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input id="faq-search-input" class="faq-search-input" type="text"
+                        placeholder="Cari pertanyaan" autocomplete="off"
+                        style="width: 100%; padding: 12px 14px 12px 54px; border-radius: 12px; border: 1px solid rgba(25, 34, 95, 0.15); background: #fff; outline: none;">
+                    <div id="faq-search-results" class="faq-search-results"
+                        style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #fff; border-radius: 8px; box-shadow: none; border: 0; outline: 0; overflow: hidden; z-index: 20; display: none; padding: 8px 10px;">
+                    </div>
+                </div>
+
                 <div class="row">
                     <!-- Left Side - Topic Tabs -->
                     <div class="col-lg-5 mb-lg-0 mb-4">
@@ -484,6 +499,129 @@
 
             window.open(whatsappURL, '_blank');
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('faq-search-input');
+            const results = document.getElementById('faq-search-results');
+            const endpoint = "{{ route('fe.faq-search') }}";
+            let debounceId = null;
+
+            if (!input || !results) return;
+
+            function hideResults() {
+                results.style.display = 'none';
+                results.innerHTML = '';
+            }
+
+            function showResults() {
+                results.style.display = 'block';
+            }
+
+            function renderItems(items) {
+                if (!items.length) {
+                    results.innerHTML = '<div class="faq-search-empty">Tidak ada hasil.</div>';
+                    showResults();
+                    return;
+                }
+
+                results.innerHTML = items.map(item => {
+                    const label = item.category ? ` <small>(${item.category})</small>` : '';
+                    return `
+                        <button type="button" class="faq-search-item" data-target="${item.target}" data-topic="${item.category_slug}"
+                            style="display: block; width: 100%; text-align: left; border: 0; outline: 0; box-shadow: none; background: transparent; padding: 6px 2px; margin: 0 0 6px 0; white-space: normal;">
+                            ${item.question}${label}
+                        </button>
+                    `;
+                }).join('');
+                showResults();
+            }
+
+            async function performSearch(query) {
+                try {
+                    const response = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`, {
+                        headers: { 'Accept': 'application/json' },
+                    });
+                    const data = await response.json();
+                    renderItems(data.items || []);
+                } catch (error) {
+                    hideResults();
+                }
+            }
+
+            input.addEventListener('input', function() {
+                const query = input.value.trim();
+
+                if (debounceId) {
+                    clearTimeout(debounceId);
+                }
+
+                if (query.length < 2) {
+                    hideResults();
+                    return;
+                }
+
+                debounceId = setTimeout(function() {
+                    performSearch(query);
+                }, 300);
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!results.contains(event.target) && event.target !== input) {
+                    hideResults();
+                }
+            });
+
+            results.addEventListener('click', function(event) {
+            const button = event.target.closest('.faq-search-item');
+            if (!button) return;
+
+            const targetId = button.getAttribute('data-target');
+            const topic = button.getAttribute('data-topic');
+            const topicItem = document.querySelector(`.faq-topic-item[data-topic="${topic}"]`);
+            const targetSection = document.getElementById(`faq-${topic}`);
+            const selectedText = button.textContent ? button.textContent.trim() : '';
+
+            if (selectedText) {
+                input.value = selectedText;
+                hideResults();
+            }
+
+            if (topicItem && !topicItem.classList.contains('active')) {
+                topicItem.click();
+            }
+
+            if (targetId) {
+                setTimeout(function() {
+                    const collapseEl = document.querySelector(`.collapse#${targetId}`);
+                    if (!collapseEl) return;
+
+                    if (targetSection) {
+                        const openAccordions = targetSection.querySelectorAll('.collapse.show');
+                        openAccordions.forEach(accordion => {
+                            if (accordion.id === targetId) return;
+                            const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
+                            bsCollapse.hide();
+                        });
+                    }
+
+                    const buttonEl = document.querySelector(`[data-bs-target="#${targetId}"]`);
+                    const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+                    bsCollapse.show();
+                    if (buttonEl) {
+                        buttonEl.classList.remove('collapsed');
+                    }
+
+                    const scrollTarget = buttonEl || collapseEl;
+                    const offset = 80;
+                    const top = scrollTarget.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top, behavior: 'smooth' });
+                }, 100);
+            }
+
+            });
+        });
     </script>
 
 
