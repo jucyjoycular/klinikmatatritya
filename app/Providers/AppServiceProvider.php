@@ -58,7 +58,8 @@ class AppServiceProvider extends ServiceProvider
 
                 // Share Office Settings
                 $officeSettings = \App\Models\Settings::whereIn('key', [
-                    'office_name', 'office_address', 'office_phone', 'office_wa', 'office_email', 'eye_anatomy_image', 'booking_link', 'help_menu_roles', 'help_menu_needs'
+                    'office_name', 'office_address', 'office_phone', 'office_wa', 'office_email', 'eye_anatomy_image', 'booking_link', 'help_menu_roles', 'help_menu_needs',
+                    'facebook', 'instagram', 'youtube', 'tiktok'
                 ])->pluck('value', 'key');
 
                 \View::share('office_name', $officeSettings['office_name'] ?? 'Klinik Mata Tritya');
@@ -68,6 +69,10 @@ class AppServiceProvider extends ServiceProvider
                 \View::share('office_email', $officeSettings['office_email'] ?? 'support@klinikmatatritya.co.id');
                 \View::share('eye_anatomy_image', $officeSettings['eye_anatomy_image'] ?? null);
                 \View::share('booking_link', $officeSettings['booking_link'] ?? 'http://tritya.id/DaftarOnline');
+                \View::share('facebook', $officeSettings['facebook'] ?? 'https://facebook.com/klinikmatatrityasurabaya');
+                \View::share('instagram', $officeSettings['instagram'] ?? 'https://instagram.com/klinikmatatritya.official');
+                \View::share('youtube', $officeSettings['youtube'] ?? 'https://youtube.com/@klinikmatatritya');
+                \View::share('tiktok', $officeSettings['tiktok'] ?? 'https://www.tiktok.com/@klinikmatatritya');
                 
                 $help_menu_roles = isset($officeSettings['help_menu_roles']) ? json_decode($officeSettings['help_menu_roles'], true) : ['Pasien', 'Keluarga Pasien'];
                 $help_menu_needs = isset($officeSettings['help_menu_needs']) ? json_decode($officeSettings['help_menu_needs'], true) : ['Dokter', 'Layanan', 'Jadwal'];

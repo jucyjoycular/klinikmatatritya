@@ -62,9 +62,11 @@
 
         .article-hero-image img {
             width: 100%;
-            height: auto;
-            /* PENTING */
+            height: 100%;
             display: block;
+            object-fit: cover;
+            background: #fff;
+            /* PENTING */
         }
 
         /* CONTENT CARD */
@@ -382,12 +384,12 @@
 
         <!-- Title -->
         <div class="article-hero-title">
-            CSR Partnership Klinik Mata Tritya
+            {{ $section->title }}
         </div>
 
         <!-- Foreground Image (gambar jabatan tangan) -->
         <div class="article-hero-image">
-            <img src="{{ asset('img/bg_jabat.png') }}" alt="CSR Partnership">
+            <img src="{{ $section->image ? asset('storage/' . $section->image) : asset('img/placeholder.png') }}" alt="{{ $section->title }}">
         </div>
 
 
@@ -398,49 +400,7 @@
     </div>
     <br><br><br><br>
     <div class="article-card">
-        <p>Klinik Mata Tritya membuka peluang kerja sama bagi perusahaan, institusi, dan komunitas yang ingin menjalankan
-            program CSR di bidang kesehatan mata. Kami siap menjadi mitra medis terpecaya untuk mendukung Kegiatan sosial
-            yang berdampak
-            nyata bagi masyarakat.
-            <br><br>
-        <h3>Bentuk Kerja Sama Yang tersedia</h3>
-        <br>
-
-        <h3>Screening Mata Massal</h3>
-        <ul>
-            <li>Pemeriksaan mata gratis untuk anak-anak,lansia, atau masyrakat umum</li>
-            <li>Bila dilakukan dilokasi mitra (sekolah,kantor,komunitas) atau diklinik.</li>
-            <li>Laporan hasil screening tersedia untuk dokumentasi CSR Perusahaan</li>
-        </ul>
-
-        <h3>Operasi Karatak Sosial</h3>
-        <ul>
-            <li>Pemeriksaan mata gratis untuk anak-anak,lansia, atau masyrakat umum</li>
-            <li>Bila dilakukan dilokasi mitra (sekolah,kantor,komunitas) atau diklinik.</li>
-            <li>Laporan hasil screening tersedia untuk dokumentasi CSR Perusahaan</li>
-        </ul>
-
-        <h3>EMC Korporat & Edukasi Visual</h3>
-        <ul>
-            <li>Pemeriksaan mata gratis untuk anak-anak,lansia, atau masyrakat umum</li>
-            <li>Bila dilakukan dilokasi mitra (sekolah,kantor,komunitas) atau diklinik.</li>
-            <li>Laporan hasil screening tersedia untuk dokumentasi CSR Perusahaan</li>
-        </ul>
-
-        <h3>Manfaat Bagi Mitra CSR</h3>
-        <ul>
-            <li>Pemeriksaan mata gratis untuk anak-anak,lansia, atau masyrakat umum</li>
-            <li>Bila dilakukan dilokasi mitra (sekolah,kantor,komunitas) atau diklinik.</li>
-            <li>Laporan hasil screening tersedia untuk dokumentasi CSR Perusahaan</li>
-        </ul>
-
-        <h3>Ajukan Kemitraan CSR</h3>
-        <ul>
-            <li>Pemeriksaan mata gratis untuk anak-anak,lansia, atau masyrakat umum</li>
-            <li>Bila dilakukan dilokasi mitra (sekolah,kantor,komunitas) atau diklinik.</li>
-            <li>Laporan hasil screening tersedia untuk dokumentasi CSR Perusahaan</li>
-        </ul>
-        </p>
+        <p>{{ $section->content }}</p>
     </div>
 
 

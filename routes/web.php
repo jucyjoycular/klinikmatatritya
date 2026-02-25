@@ -70,6 +70,10 @@ Route::prefix('admin')->group(function () {
         
         Route::get('settings/general', [App\Http\Controllers\Admin\SettingsController::class, 'general'])->name('admin.settings.general');
         Route::post('settings/general', [App\Http\Controllers\Admin\SettingsController::class, 'updateGeneral'])->name('admin.settings.update-general');
+
+        Route::get('settings/footer', [App\Http\Controllers\Admin\SettingsController::class, 'footerIndex'])->name('admin.settings.footer');
+        Route::get('settings/footer/{id}/items', [App\Http\Controllers\Admin\SettingsController::class, 'getFooterItems'])->name('admin.settings.footer.items');
+        Route::post('settings/footer/{id}', [App\Http\Controllers\Admin\SettingsController::class, 'updateFooterSection'])->name('admin.settings.footer.update');
     });
 });
 
@@ -123,6 +127,7 @@ Route::get('/careers/{slug}', [FrontController::class, 'carier'])->name('fe.cari
 Route::post('/job-form', [FrontController::class, 'storeJobApplication'])->name('fe.job-application.store');
 Route::get('/news', [FrontController::class, 'news'])->name('fe.news.index');
 Route::get('/news/{slug}', [FrontController::class, 'articleDetail'])->name('fe.news.detail');
+Route::get('/faq-search', [FrontController::class, 'faqSearch'])->name('fe.faq-search');
 Route::get('/search', [App\Http\Controllers\Front\SearchController::class, 'search'])->name('fe.search');
 Route::get('/search_news', [App\Http\Controllers\Front\SearchController::class, 'search_news'])->name('fe.search_news');
 // Route::get('/articles', [FrontController::class, 'articles'])->name('fe.articles.index'); // Deprecated

@@ -77,7 +77,9 @@
                         </svg>
 
                         Informasi
-                    </h6><a href="/emc" class="footer-link">EMC</a><a href="/promosi" class="footer-link">Promosi</a>
+                    </h6>
+                    <a href="/emc" class="footer-link">EMC</a>
+                    <a href="/promosi" class="footer-link">Promosi</a>
                 </div>
                 <div class="col-lg-2 col-md-4 mb-4">
                     <h6 class="fw-bold mb-3">
@@ -101,16 +103,16 @@
                 <div class="col-lg-3 mb-4">
                     <h6 class="fw-bold mb-3">Sosial Media Kami</h6>
                     <div class="d-flex gap-3">
-                        <a href="https://facebook.com/klinikmatatrityasurabaya" class="fs-4 text-white">
+                        <a href="{{ $facebook }}" class="fs-4 text-white">
                             <i class="fab fa-facebook"></i>
                         </a>
-                        <a href="https://instagram.com/klinikmatatritya.official" class="fs-4 text-white">
+                        <a href="{{ $instagram }}" class="fs-4 text-white">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="https://youtube.com/@klinikmatatritya" class="fs-4 text-white">
+                        <a href="{{ $youtube }}" class="fs-4 text-white">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@klinikmatatritya" class="fs-4 text-white">
+                        <a href="{{ $tiktok }}" class="fs-4 text-white">
                             <i class="fab fa-tiktok"></i>
                         </a>
                     </div>
