@@ -3,6 +3,22 @@
 @section('title', 'Edit Dokter - Admin Panel')
 @section('header_title', 'Edit Data Dokter')
 
+<style>
+    .media-card{
+        cursor:pointer;
+        transition:0.2s;
+    }
+    .media-card:hover{
+        transform:scale(1.05);
+    }
+    .media-card.selected{
+        border:3px solid #0d6efd !important;
+    }
+    .modal-body{
+        max-height:70vh;
+    }
+</style>
+
 @section('content')
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -34,18 +50,29 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Foto Dokter</label>
-                            @if ($doctor->photo)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $doctor->photo) }}" alt="Current Photo" class="rounded"
-                                        width="100">
-                                </div>
-                            @endif
-                            <input type="file" name="photo" class="form-control @error('photo') is-invalid @enderror"
-                                accept="image/*">
-                            <div class="form-text small">Biarkan kosong jika tidak ingin mengubah foto.</div>
+                            
+                            <div class="mb-2">
+                                @if($doctor->photo)
+                                    <img src="{{ asset('storage/' . $doctor->photo) }}" id="currentPreview" class="rounded border" style="width:200px; height:200px; object-fit:cover;">
+                                @else
+                                    <img src="https://via.placeholder.com/200?text=No+Image" id="currentPreview" class="rounded border">
+                                @endif
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <input type="file" name="photo" id="photo-file" class="form-control @error('photo') is-invalid @enderror" accept="image/*">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaModal">
+                                    Browse Media
+                                </button>
+                            </div>
+                            
+                            <input type="hidden" id="media_id" name="media_id" value="">
+                            
+                            <div class="form-text small mt-2">Upload gambar baru atau pilih dari Media Library.</div>
                             @error('photo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+
                         </div>
 
                         <div class="mb-3">
@@ -155,33 +182,85 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            let scheduleIndex = {{ $doctor->schedules->count() }};
-            const dayOptions = `
-                <option value="">Pilih Hari</option>
-                <option value="Senin">Senin</option>
-                <option value="Selasa">Selasa</option>
-                <option value="Rabu">Rabu</option>
-                <option value="Kamis">Kamis</option>
-                <option value="Jumat">Jumat</option>
-                <option value="Sabtu">Sabtu</option>
-                <option value="Minggu">Minggu</option>
-            `;
+    <!-- Modal Browse Media -->
+    <div class="modal fade" id="mediaModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
 
-            function updateScheduleHours(el) {
-                const row = el.closest('.row');
-                if (!row) return;
-                const start = row.querySelector('input[name*="[start]"]')?.value || '';
-                const end = row.querySelector('input[name*="[end]"]')?.value || '';
-                const hoursField = row.querySelector('.schedule-hours');
+        <div class="modal-header">
+            <h5 class="modal-title">Media Library</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-                if (!hoursField) return;
-                hoursField.value = start && end ? `${start} - ${end}` : '';
-            }
+        <div class="modal-body">
 
-            function addSchedule() {
-                document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
+            @if($mediaItems->count())
+            <div class="row g-3">
+                @foreach($mediaItems as $media)
+                <div class="col-6 col-md-3 col-lg-2">
+                    <div class="media-card border rounded p-1"
+                        data-id="{{ $media->id }}"
+                        data-path="{{ asset('storage/'.$media->filepath) }}">
+
+                        <img src="{{ asset('storage/'.$media->filepath) }}"
+                            class="img-fluid rounded"
+                            style="height:120px; width:100%; object-fit:cover;">
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+                <div class="text-center text-muted">
+                    Belum ada media tersedia.
+                </div>
+            @endif
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancel
+            </button>
+
+            <button type="button" class="btn btn-primary" id="selectMediaBtn" disabled>
+                Gunakan Gambar Ini
+            </button>
+        </div>
+
+    </div>
+    </div>
+    </div>
+@endsection
+
+@section('scripts')
+<script>
+
+let scheduleIndex = {{ $doctor->schedules->count() }};
+const dayOptions = `
+    <option value="">Pilih Hari</option>
+    <option value="Senin">Senin</option>
+    <option value="Selasa">Selasa</option>
+    <option value="Rabu">Rabu</option>
+    <option value="Kamis">Kamis</option>
+    <option value="Jumat">Jumat</option>
+    <option value="Sabtu">Sabtu</option>
+    <option value="Minggu">Minggu</option>
+`;
+
+function updateScheduleHours(el) {
+    const row = el.closest('.row');
+    if (!row) return;
+
+    const start = row.querySelector('input[name*="[start]"]')?.value || '';
+    const end = row.querySelector('input[name*="[end]"]')?.value || '';
+    const hoursField = row.querySelector('.schedule-hours');
+
+    if (!hoursField) return;
+    hoursField.value = start && end ? `${start} - ${end}` : '';
+}
+
+function addSchedule() {
+    document.getElementById('schedule-wrapper').insertAdjacentHTML('beforeend', `
         <div class="row mb-2 align-items-center">
             <div class="col-md-4">
                 <select name="schedule[${scheduleIndex}][day]" class="form-select">
@@ -200,9 +279,67 @@
             </div>
         </div>
     `);
-                scheduleIndex++;
-            }
-        </script>
-    @endpush
+    scheduleIndex++;
+}
 
+document.addEventListener('DOMContentLoaded', function () {
+
+    let selectedId = null;
+    let selectedPath = null;
+
+    const mediaCards = document.querySelectorAll('.media-card');
+    const selectBtn = document.getElementById('selectMediaBtn');
+    const hiddenInput = document.getElementById('media_id');
+    const fileInput = document.getElementById('photo-file');
+    const preview = document.getElementById('currentPreview');
+
+    mediaCards.forEach(card => {
+        card.addEventListener('click', function () {
+
+            mediaCards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+
+            selectedId = this.dataset.id;
+            selectedPath = this.dataset.path;
+
+            selectBtn.disabled = false;
+        });
+    });
+
+    selectBtn.addEventListener('click', function () {
+
+        if (!selectedId) return;
+
+        hiddenInput.value = selectedId;
+
+        if (selectedPath && preview) {
+            preview.src = selectedPath;
+        }
+
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById('mediaModal')
+        );
+        modal.hide();
+    });
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function (e) {
+
+            if (e.target.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    if (preview) preview.src = e.target.result;
+                };
+
+                reader.readAsDataURL(e.target.files[0]);
+
+                hiddenInput.value = '';
+            }
+        });
+    }
+
+});
+
+</script>
 @endsection

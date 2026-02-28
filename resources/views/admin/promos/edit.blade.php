@@ -33,7 +33,16 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Gambar Promo</label>
-                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                            
+                            <div class="d-flex gap-3">
+                                <input type="file" name="image" id="inputImage" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaModal">
+                                    Browse Media
+                                </button>
+                            </div>
+                            
+                            <input type="hidden" name="media_id" id="media_id" value="{{ $promo->media_id }}">
+                            
                             <div class="form-text small">Biarkan kosong jika tidak ingin mengganti gambar.</div>
                             @if($promo->image)
                                 <div class="mt-2">
@@ -78,6 +87,10 @@
     </div>
 </div>
 
+
+@endsection
+
+@section('scripts')
 <!-- CKEditor 5 -->
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>

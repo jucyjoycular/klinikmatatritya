@@ -117,7 +117,7 @@
                 {{-- <h4 class="fw-bold mb-3">Periode Promo</h4>
                 <p>Maret – April 2025</p> --}}
 
-                <p>{{ $section->content }}</p>
+                <p>{!! $section->content !!}</p>
 
                 <table class="promo-table">
                 <thead>

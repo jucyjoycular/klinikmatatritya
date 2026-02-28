@@ -107,9 +107,24 @@
                         <label for="image" class="form-label fw-semibold">
                             <i class="fas fa-image me-1 text-muted"></i>Image
                         </label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <div class="d-flex gap-2 mb-2">
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="image" 
+                                   name="image" 
+                                   accept="image/*">
+                            <button type="button" 
+                                    class="btn btn-outline-primary" 
+                                    id="browseMediaBtn"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#mediaModal">
+                                <i class="fas fa-images me-1"></i>Browse Media
+                            </button>
+                        </div>
+                        <input type="hidden" name="media_id" id="footer_media_id">
                         <small class="form-text text-muted d-block mt-1">
-                            <i class="fas fa-info-circle me-1"></i>Format: JPG, JPEG, PNG. Maksimal: 2MB
+                            <i class="fas fa-info-circle me-1"></i>Format: JPG, JPEG, PNG. Maksimal: 2MB<br>
+                            <i class="fas fa-exclamation-triangle me-1"></i>Preview gambar akan muncul, tapi tidak akan tersimpan sampai Anda klik <strong>"Simpan Perubahan"</strong>
                         </small>
                         <div class="invalid-feedback" id="image-error"></div>
                         <div id="current-image" class="mt-3"></div>
@@ -158,50 +173,226 @@
         </div>
     </div>
 </div>
+
+<!-- Media Browser Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Library</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @if(isset($media) && $media->count())
+                <div class="row g-3">
+                    @foreach($media as $item)
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <div class="media-card border rounded p-1"
+                             data-id="{{ $item->id }}"
+                             data-path="{{ asset('storage/'.$item->filepath) }}">
+                            <img src="{{ asset('storage/'.$item->filepath) }}"
+                                 class="img-fluid rounded"
+                                 style="height:120px; width:100%; object-fit:cover;">
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                    <div class="text-center text-muted">
+                        Belum ada media tersedia.
+                    </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="selectMediaBtn" disabled>
+                    Gunakan Gambar Ini
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<style>
+    .media-card {
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .media-card:hover {
+        transform: scale(1.05);
+    }
+    .media-card.selected {
+        border: 3px solid #0d6efd !important;
+    }
+    #mediaModal .modal-body {
+        max-height: 70vh;
+    }
+</style>
+
 <script>
+let footerEditor;
+let selectedMediaId = null;
+let selectedMediaPath = null;
+let isSwitchingToMediaModal = false;
+
 $(document).ready(function() {
-    console.log('Footer script loaded'); // Debug log
-    
-    // Handle click event untuk button view
+    ClassicEditor.create(document.querySelector('#content'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'link',
+            'bulletedList', 'numberedList',
+            'blockQuote', '|',
+            'undo', 'redo'
+        ]
+    })
+    .then(editor => {
+        footerEditor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+    // === Media Browser Handlers ===
+    $(document).on('click', '.media-card', function() {
+        $('.media-card').removeClass('selected');
+        $(this).addClass('selected');
+        
+        selectedMediaId = $(this).data('id');
+        selectedMediaPath = $(this).data('path');
+        
+        $('#selectMediaBtn').prop('disabled', false);
+    });
+
+    $('#selectMediaBtn').on('click', function() {
+        $('#footer_media_id').val(selectedMediaId);
+        
+        if (selectedMediaPath) {
+            $('#current-image').html(`
+                <div class="card bg-light border">
+                    <div class="card-body p-3">
+                        <p class="mb-2 fw-semibold text-dark">
+                            <i class="fas fa-image me-1"></i>Gambar dari Media Library (Belum Tersimpan):
+                        </p>
+                        <img src="${selectedMediaPath}" alt="Selected Media" 
+                            class="img-fluid rounded shadow-sm" 
+                            style="max-width: 100%; max-height: 250px; object-fit: contain;">
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-info-circle me-1"></i>Klik "Simpan Perubahan" untuk menyimpan gambar ini
+                        </small>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Reset file input karena pakai media library
+        $('#image').val('');
+        
+        // Close media modal and return to footer modal
+        const mediaModal = bootstrap.Modal.getInstance(document.getElementById('mediaModal'));
+        if (mediaModal) {
+            mediaModal.hide();
+        }
+        
+        // Ensure footer modal stays open
+        setTimeout(function() {
+            const footerModal = bootstrap.Modal.getInstance(document.getElementById('footerModal'));
+            if (!footerModal) {
+                const footerModalElement = document.getElementById('footerModal');
+                const newFooterModal = new bootstrap.Modal(footerModalElement);
+                newFooterModal.show();
+            } else {
+                footerModal.show();
+            }
+            // Remove extra backdrop if any
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            if (backdrops.length > 1) {
+                backdrops[backdrops.length - 1].remove();
+            }
+        }, 300);
+    });
+
+    $('#browseMediaBtn').on('click', function() {
+        isSwitchingToMediaModal = true;
+        // Reset file input saat buka modal
+        $('#image').val('');
+    });
+
+    // Preview upload manual
+    $('#image').on('change', function(e) {
+        if (e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                $('#current-image').html(`
+                    <div class="card bg-light border">
+                        <div class="card-body p-3">
+                            <p class="mb-2 fw-semibold text-dark">
+                                <i class="fas fa-image me-1"></i>Preview Gambar Upload (Belum Tersimpan):
+                            </p>
+                            <img src="${evt.target.result}" alt="Preview" 
+                                class="img-fluid rounded shadow-sm" 
+                                style="max-width: 100%; max-height: 250px; object-fit: contain;">
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle me-1"></i>Klik "Simpan Perubahan" untuk menyimpan gambar ini
+                            </small>
+                        </div>
+                    </div>
+                `);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+            
+            // Reset media_id karena pakai upload manual
+            $('#footer_media_id').val('');
+        }
+    });
+
     $(document).on('click', '.btn-view', function() {
-        console.log('Button clicked'); // Debug log
         
         const id = $(this).data('id');
         const slug = $(this).data('slug');
         const title = $(this).data('title');
         const content = $(this).data('content');
         const image = $(this).data('image');
-        
-        console.log('Data:', { id, slug, title, content, image }); // Debug log
 
-        // Reset form
         $('#footerForm')[0].reset();
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').empty().hide();
+        
+        // Reset media selection
+        $('#footer_media_id').val('');
+        selectedMediaId = null;
+        selectedMediaPath = null;
 
-        // Set data ke modal
         $('#section_id').val(id);
         $('#section_slug').val(slug);
         $('#section_name').val(slug ? slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '');
         $('#title').val(title || '');
         $('#content').val(content || '');
 
-        // Show current image if exists
+        if (footerEditor) {
+            footerEditor.setData(content || '');
+        }
+
         if (image && image !== '') {
             $('#current-image').html(`
                 <div class="card bg-light border">
                     <div class="card-body p-3">
                         <p class="mb-2 fw-semibold text-dark">
-                            <i class="fas fa-image me-1"></i>Gambar saat ini:
+                            <i class="fas fa-image me-1 text-success"></i>Gambar Tersimpan:
                         </p>
                         <img src="/storage/${image}" alt="Current Image" 
                             class="img-fluid rounded shadow-sm" 
                             style="max-width: 100%; max-height: 250px; object-fit: contain;">
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-check-circle me-1 text-success"></i>Gambar ini sudah tersimpan di database
+                        </small>
                     </div>
                 </div>
             `);
@@ -220,7 +411,7 @@ $(document).ready(function() {
         const footerModal = new bootstrap.Modal(modalElement);
         footerModal.show();
         
-        console.log('Modal shown'); // Debug log
+        // console.log('Modal shown'); // Debug log
     });
 
     // Function to load items
@@ -281,12 +472,18 @@ $(document).ready(function() {
         
         // Add basic fields
         formData.append('title', $('#title').val());
-        formData.append('content', $('#content').val());
+        formData.append('content', footerEditor ? footerEditor.getData() : '');
         
         // Add image if selected
         const imageFile = $('#image')[0].files[0];
         if (imageFile) {
             formData.append('image', imageFile);
+        }
+        
+        // Add media_id if selected from media library
+        const mediaId = $('#footer_media_id').val();
+        if (mediaId) {
+            formData.append('media_id', mediaId);
         }
         
         // Rebuild items array with sequential index
@@ -373,10 +570,52 @@ $(document).ready(function() {
 
     // Reset form ketika modal ditutup
     $('#footerModal').on('hidden.bs.modal', function() {
+        if (isSwitchingToMediaModal) {
+            return;
+        }
+
         $('#footerForm')[0].reset();
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').empty().hide();
         $('#current-image').empty();
+        $('#footer_media_id').val('');
+        selectedMediaId = null;
+        selectedMediaPath = null;
+    });
+    
+    // Reset media selection when media modal is closed
+    $('#mediaModal').on('hidden.bs.modal', function() {
+        $('.media-card').removeClass('selected');
+        $('#selectMediaBtn').prop('disabled', true);
+        
+        // Ensure footer modal stays open after media modal closes
+        if (!$('#footerModal').hasClass('show')) {
+            const footerModal = bootstrap.Modal.getInstance(document.getElementById('footerModal'));
+            if (footerModal) {
+                footerModal.show();
+            }
+        }
+        
+        // Clean up any extra backdrops
+        setTimeout(function() {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            if (backdrops.length > 1) {
+                for (let i = 1; i < backdrops.length; i++) {
+                    backdrops[i].remove();
+                }
+            }
+            // Ensure body has modal-open class if footer modal is open
+            if ($('#footerModal').hasClass('show')) {
+                $('body').addClass('modal-open');
+            }
+            isSwitchingToMediaModal = false;
+        }, 100);
+    });
+    
+    // When media modal is shown, don't hide footer modal
+    $('#mediaModal').on('show.bs.modal', function() {
+        // Keep body modal-open class
+        $('body').addClass('modal-open');
     });
 });
 </script>

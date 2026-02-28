@@ -240,7 +240,7 @@
     <div class="d-flex justify-content-between align-items-center container">
 
         <a class="navbar-brand" href="/">
-            <img src="{{ asset('img/logo.png') }}" width="80">
+            <img src="{{ asset('img/logonew.jpeg') }}" width="80">
         </a>
 
         <!-- Mobile menu button -->

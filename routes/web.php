@@ -42,7 +42,7 @@ Route::prefix('admin')->group(function () {
         Route::get('hero', [App\Http\Controllers\Admin\HeroController::class, 'edit'])
         ->name('admin.hero.edit');
 
-        Route::put('hero', [App\Http\Controllers\Admin\HeroController::class, 'update'])
+        Route::put('hero/{hero}', [App\Http\Controllers\Admin\HeroController::class, 'update'])
         ->name('admin.hero.update');
             
         Route::resource('articles', App\Http\Controllers\Admin\ArticleController::class)->names('admin.articles');
@@ -74,6 +74,12 @@ Route::prefix('admin')->group(function () {
         Route::get('settings/footer', [App\Http\Controllers\Admin\SettingsController::class, 'footerIndex'])->name('admin.settings.footer');
         Route::get('settings/footer/{id}/items', [App\Http\Controllers\Admin\SettingsController::class, 'getFooterItems'])->name('admin.settings.footer.items');
         Route::post('settings/footer/{id}', [App\Http\Controllers\Admin\SettingsController::class, 'updateFooterSection'])->name('admin.settings.footer.update');
+
+        Route::get('media', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('admin.media.index');
+        Route::get('media/list', [App\Http\Controllers\Admin\MediaController::class, 'list'])->name('admin.media.list');
+        Route::get('media/{id}/usage', [App\Http\Controllers\Admin\MediaController::class, 'usage'])->name('admin.media.usage');
+        Route::delete('media/{id}', [App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('admin.media.destroy');
+        
     });
 });
 

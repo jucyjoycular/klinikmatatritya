@@ -3,6 +3,22 @@
 @section('title', 'Tambah Promo - Admin Panel')
 @section('header_title', 'Tambah Promo Baru')
 
+<style>
+    .media-card{
+        cursor:pointer;
+        transition:0.2s;
+    }
+    .media-card:hover{
+        transform:scale(1.05);
+    }
+    .media-card.selected{
+        border:3px solid #0d6efd !important;
+    }
+    .modal-body{
+        max-height:70vh;
+    }
+</style>
+
 @section('content')
 <div class="row justify-content-center">
     <div class="col-lg-10">
@@ -32,8 +48,21 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Gambar Promo</label>
-                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
-                            <div class="form-text small">Format: JPG, PNG. Maks: 2MB.</div>
+
+                            <div class="d-flex gap-2">
+                                <input type="file" name="image" id="uploadInput" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#mediaModal">
+                                    Browse Media
+                                </button>
+                            </div>
+
+                            <input type="hidden" name="media_id" id="selectedMediaId">
+
+                            <div class="form-text small">
+                                Upload gambar baru atau pilih dari Media Library.
+                            </div>
+
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

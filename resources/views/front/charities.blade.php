@@ -392,7 +392,7 @@
     </div>
     <br><br><br><br>
     <div class="article-card">
-        <p>{{ $section->content }}
+        <p>{!! $section->content !!}</p>
     </div>
 
 
