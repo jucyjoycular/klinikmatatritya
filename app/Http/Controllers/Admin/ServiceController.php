@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use App\Models\Service;
+use App\Traits\HandlesMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
+    use HandlesMedia;
+
     public function index()
     {
         $services = Service::latest()->paginate(10);
@@ -18,7 +22,8 @@ class ServiceController extends Controller
 
     public function create()
     {
-        return view('admin.services.create');
+        $mediaItems = Media::latest()->get();
+        return view('admin.services.create', compact('mediaItems'));
     }
 
     public function store(Request $request)
@@ -33,19 +38,31 @@ class ServiceController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->title);
 
-        if ($request->hasFile('image')) {
+        $service = Service::create($data);
+
+        if ($request->filled('media_id')) {
+            $media = Media::findOrFail($request->media_id);
+            
+            $this->attachExistingMedia($service, $media->id);
+            $data['image'] = $media->filepath;
+            $service->update($data);
+        } elseif ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('services', 'public');
             $data['image'] = $imagePath;
-        }
+            $service->fill($data)->save();
 
-        Service::create($data);
+            $this->attachMedia($service, $request->file('image'));
+        } else {
+            $service->fill($data)->save();
+        }
 
         return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil ditambahkan.');
     }
 
     public function edit(Service $service)
     {
-        return view('admin.services.edit', compact('service'));
+        $mediaItems = Media::latest()->get();
+        return view('admin.services.edit', compact('service', 'mediaItems'));
     }
 
     public function update(Request $request, Service $service)
@@ -60,24 +77,38 @@ class ServiceController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->title);
 
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($service->image) {
+        if ($request->filled('media_id')) {
+
+            $media = Media::findOrFail($request->media_id);
+
+            $this->attachExistingMedia($service, $media->id);
+
+            $data['image'] = $media->filepath;
+            $service->update($data);
+        } elseif ($request->hasFile('image')) {
+            if ($service && Storage::disk('public')->exists($service->image)) {
                 Storage::disk('public')->delete($service->image);
+
+                $service->mediaUsage()->delete();
             }
             $imagePath = $request->file('image')->store('services', 'public');
             $data['image'] = $imagePath;
-        }
+            $service->fill($data)->save();
 
-        $service->update($data);
+            $this->attachMedia($service, $request->file('image'));
+        } else {
+            $service->update ($data);
+        }
 
         return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil diperbarui.');
     }
 
     public function destroy(Service $service)
     {
-        if ($service->image) {
+        if ($service->image && Storage::disk('public')->exists($service->image)) {
             Storage::disk('public')->delete($service->image);
+
+            $service->mediaUsage()->delete();
         }
         
         $service->delete();

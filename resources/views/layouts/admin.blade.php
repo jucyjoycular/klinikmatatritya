@@ -214,6 +214,12 @@
                 <span>Dokter</span>
             </a>
 
+            <a href="{{ route('admin.media.index') }}"
+                class="menu-item @if (request()->routeIs('admin.media.*')) active @endif">
+                <i class="fas fa-photo-video"></i>
+                <span>Media</span>
+            </a>
+
             <a href="{{ route('admin.services.index') }}"
                 class="menu-item @if (request()->routeIs('admin.services.*')) active @endif">
                 <i class="fas fa-hand-holding-medical"></i>

@@ -2,14 +2,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Settings;
-use Illuminate\Support\Facades\Storage;
 use App\Models\FooterSection;
+use App\Models\Media;
+use App\Models\Settings;
+use App\Traits\HandlesMedia;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
+    use HandlesMedia;
+
     public function logo()
     {
         $logo = Settings::where('key', 'site_logo')->first();
@@ -123,10 +127,13 @@ class SettingsController extends Controller
         $help_menu_roles = is_array($help_menu_roles) ? implode("\n", $help_menu_roles) : $help_menu_roles;
         $help_menu_needs = is_array($help_menu_needs) ? implode("\n", $help_menu_needs) : $help_menu_needs;
 
+        // Get media for media browser modal
+        $media = Media::latest()->get();
+
         return view('admin.settings.general', compact(
             'maintenance_mode', 'website_font', 'office_name', 'office_address', 'office_phone', 'office_wa', 'office_email', 
             'eye_anatomy_image', 'booking_link', 'help_menu_roles', 'help_menu_needs',
-            'about_us', 'vision', 'mission', 'motto', 'facebook', 'instagram', 'youtube', 'tiktok'
+            'about_us', 'vision', 'mission', 'motto', 'facebook', 'instagram', 'youtube', 'tiktok', 'media'
         ))->with('systemfonts', $systemfonts)
           ->with('googlefonts', $googlefonts)
           ->with('isGoogleFont', $isGoogleFont);
@@ -194,24 +201,59 @@ class SettingsController extends Controller
 
         // Upload Eye Anatomy Image
         if ($request->hasFile('eye_anatomy_image')) {
+
             $request->validate([
                 'eye_anatomy_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            $path = $request->file('eye_anatomy_image')->store('public/img');
-            $url = str_replace('public/', 'storage/', $path);
+            $existing = Settings::where('key', 'eye_anatomy_image')->first();
+
+            if ($existing && str_starts_with($existing->value, 'img/') && Storage::disk('public')->exists($existing->value)) {
+                Storage::disk('public')->delete($existing->value);
+            }
+
+            if ($existing) {
+                $existing->mediaUsage()->delete();
+            }
+            
+            $path = $request->file('eye_anatomy_image')->store('img', 'public');
 
             Settings::updateOrCreate(
                 ['key' => 'eye_anatomy_image'],
-                ['value' => $url]
+                ['value' => $path]
             );
+        } elseif ($request->filled('eye_anatomy_media_id')) {
+            $media = Media::find($request->eye_anatomy_media_id);
+            if ($media) {
+                $existing = Settings::where('key', 'eye_anatomy_image')->first();
+
+                if ($existing && str_starts_with($existing->value, 'img/') && Storage::disk('public')->exists($existing->value)) {
+                    Storage::disk('public')->delete($existing->value);
+                }
+
+                if ($existing) {
+                    $existing->mediaUsage()->delete();
+                }
+
+                Settings::updateOrCreate(
+                    ['key' => 'eye_anatomy_image'],
+                    ['value' => $media->filepath]
+                );
+
+                $setting = Settings::where('key', 'eye_anatomy_image')->first();
+                if ($setting) {
+                    $this->attachExistingMedia($setting, $media->id);
+                }
+            }
         }
 
         return back()->with('success', 'Pengaturan umum berhasil diperbarui!');
     }
+
     public function footerIndex(){
         $sections = FooterSection::all();
-        return view('admin.footer-management.footer', compact('sections'));
+        $media = Media::latest()->get();
+        return view('admin.footer-management.footer', compact('sections', 'media'));
     }
 
     public function getFooterItems($id) {
@@ -235,6 +277,7 @@ class SettingsController extends Controller
                 'title' => 'required|string|max:255',
                 'content' => 'nullable|string',
                 'image' => 'nullable|image|max:2048',
+                'media_id' => 'nullable|exists:media,id',
                 'items' => 'nullable|array',
                 'items.*.pemeriksaan' => 'required|string|max:255',
                 'items.*.harga_normal' => 'required|numeric|min:0',
@@ -243,27 +286,31 @@ class SettingsController extends Controller
             ]);
 
             $section = FooterSection::findOrFail($id);
-            
-            $section->title = $request->title;
-            $section->content = $request->content;
 
             if ($request->hasFile('image')) {
-                // Delete old image if exists
-                if ($section->image) {
+                if ($section->image && str_starts_with($section->image, 'footer/') && Storage::disk('public')->exists($section->image)) {
                     Storage::disk('public')->delete($section->image);
                 }
+                $section->mediaUsage()->delete();
                 
-                // Get file extension
-                $extension = $request->file('image')->getClientOriginalExtension();
-                
-                // Create filename based on slug for easy management
-                $filename = $section->slug . '.' . $extension;
-                
-                // Store file with custom name
-                $imagePath = $request->file('image')->storeAs('footer', $filename, 'public');
+                $imagePath = $request->file('image')->store('footer', 'public');
                 $section->image = $imagePath;
+                $this->attachMedia($section, $request->file('image'), 'footer');
+                
+            } elseif ($request->filled('media_id')) {
+                $media = Media::findOrFail($request->media_id);
+                
+                if ($section->image && str_starts_with($section->image, 'footer/') && Storage::disk('public')->exists($section->image)) {
+                    Storage::disk('public')->delete($section->image);
+                }
+                $section->mediaUsage()->delete();
+                
+                $section->image = $media->filepath;
+                $this->attachExistingMedia($section, $media->id);
             }
 
+            $section->title = $request->title;
+            $section->content = $request->content;
             $section->save();
 
             // Handle items (update/create)

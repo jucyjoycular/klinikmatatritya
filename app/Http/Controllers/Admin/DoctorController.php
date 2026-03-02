@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\DoctorSchedule;
+use App\Models\Media;
+use App\Models\MediaUsage;
+use App\Traits\HandlesMedia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DoctorController extends Controller
 {
+
+    use HandlesMedia;
+    
     public function index()
     {
         $doctors = Doctor::latest()->paginate(10);
@@ -18,12 +25,13 @@ class DoctorController extends Controller
 
     public function create()
     {
-        return view('admin.doctors.create');
+        $mediaItems = Media::latest()->get();
+        return view('admin.doctors.create', compact('mediaItems'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Doctor $doctor)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'specialty' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -34,15 +42,30 @@ class DoctorController extends Controller
             'special_training' => 'nullable|string',
             'competence' => 'nullable|string',
             'research_publications' => 'nullable|string',
+            'media_id' => 'nullable|exists:media,id',
         ]);
 
         $data = $request->all();
 
-        if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('doctors', 'public');
-            $data['photo'] = $photoPath;
-        }
         $doctor = Doctor::create($data);
+
+        if ($request->filled('media_id')) {
+
+            $media = Media::findOrFail($request->media_id);
+
+            $this->attachExistingMedia($doctor, $media->id);
+
+            $data['photo'] = $media->filepath;
+            $doctor->update($data);
+        } elseif ($request->hasFile('photo')) {
+            $imagePath = $request->file('photo')->store('doctors', 'public');
+            $data['photo'] = $imagePath;
+            $doctor->fill($data)->save();
+
+            $this->attachMedia($doctor, $request->file('photo'));
+        } else {
+            $doctor->fill($data)->save();
+        }
 
         if ($request->has('schedule')) {
         foreach ($request->schedule as $item) {
@@ -57,7 +80,8 @@ class DoctorController extends Controller
 
     public function edit(Doctor $doctor)
     {
-        return view('admin.doctors.edit', compact('doctor'));
+        $mediaItems = Media::latest()->get();
+        return view('admin.doctors.edit', compact('doctor', 'mediaItems'));
     }
 
     public function update(Request $request, Doctor $doctor)
@@ -73,20 +97,35 @@ class DoctorController extends Controller
             'special_training' => 'nullable|string',
             'competence' => 'nullable|string',
             'research_publications' => 'nullable|string',
+            'media_id' => 'nullable|exists:media,id',
         ]);
 
         $data = $request->all();
 
-        if ($request->hasFile('photo')) {
-            // Delete old photo
-            if ($doctor->photo) {
-                Storage::disk('public')->delete($doctor->photo);
-            }
-            $photoPath = $request->file('photo')->store('doctors', 'public');
-            $data['photo'] = $photoPath;
-        }
+        if ($request->filled('media_id')) {
 
-        $doctor->update($data);
+            $media = Media::findOrFail($request->media_id);
+
+            $this->attachExistingMedia($doctor, $media->id);
+
+            $data['photo'] = $media->filepath;
+            $doctor->update($data);
+        } elseif ($request->hasFile('photo')) {
+             if ($doctor && Storage::disk('public')->exists($doctor->photo)) {
+                Storage::disk('public')->delete($doctor->photo);
+
+                DB::table('media_usages')->where('model_type', get_class($doctor))
+                        ->where('model_id', $doctor->id)
+                        ->delete();
+            }
+            $imagePath = $request->file('photo')->store('doctors', 'public');
+            $data['photo'] = $imagePath;
+            $doctor->fill($data)->save();
+            
+            $this->attachMedia($doctor, $request->file('photo'));
+        } else {
+            $doctor->fill($data)->save();
+        }
 
         $existingIds = $doctor->schedules()->pluck('id')->toArray();
         $incomingIds = [];
@@ -105,9 +144,7 @@ class DoctorController extends Controller
                         'hours' => $item['hours'],
                     ]);
                     $incomingIds[] = $item['id'];
-                } 
-                // Create new
-                else {
+                } else {
                     $schedule = $doctor->schedules()->create([
                         'day' => $item['day'],
                         'hours' => $item['hours'],
@@ -125,8 +162,8 @@ class DoctorController extends Controller
     }
 
     public function destroy(Doctor $doctor)
-    {   
-        $doctor->schedules()->delete();
+    {  
+        $doctor->schedules()->delete();    
         
         if ($doctor->photo) {
             Storage::disk('public')->delete($doctor->photo);
