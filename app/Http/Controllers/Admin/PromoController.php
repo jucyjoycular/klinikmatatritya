@@ -23,8 +23,8 @@ class PromoController extends Controller
 
     public function create()
     {
-        $mediaItems = Media::all(); 
-        return view('admin.promos.create', compact('mediaItems'));
+        $media = Media::all(); 
+        return view('admin.promos.create', compact('media'));
     }
 
     public function store(Request $request)
@@ -39,25 +39,23 @@ class PromoController extends Controller
             'media_id' => 'nullable|exists:media,id',
         ]);
 
-        $data = $request->all();
+        $data = $request->except(['image', 'media_id']);
         $data['slug'] = Str::slug($request->title);
+
+        if ($request->filled('media_id')) {
+            $media = Media::findOrFail($request->media_id);
+            $data['image'] = $media->filepath;
+        } elseif ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('promos', 'public');
+            $data['image'] = $imagePath;
+        }
 
         $promo = Promo::create($data);
 
         if ($request->filled('media_id')) {
-            $media = Media::findOrFail($request->media_id);
-
-            $this->attachExistingMedia($promo, $media->id);
-            $data['image'] = $media->filepath;
-            $promo->update($data);
-        } elseif ( $request->hasFile('image')) {
-             $imagePath = $request->file('image')->store('promos', 'public');
-             $data['image'] = $imagePath;
-             $promo->save();
-
-             $this->attachMedia($promo, $request->file('image'), 'promos');
-        } else {
-            $promo->fill($data)->save();
+            $this->attachExistingMedia($promo, $request->media_id);
+        } elseif ($request->hasFile('image')) {
+            $this->attachMedia($promo, $request->file('image'), 'promos');
         }
 
         return redirect()->route('admin.promos.index')->with('success', 'Promo berhasil ditambahkan.');
@@ -65,8 +63,8 @@ class PromoController extends Controller
 
     public function edit(Promo $promo)
     {
-        $mediaItems = Media::all(); 
-        return view('admin.promos.edit', compact('promo', 'mediaItems'));
+        $media = Media::all(); 
+        return view('admin.promos.edit', compact('promo', 'media'));
     }
 
     public function update(Request $request, Promo $promo)
@@ -81,7 +79,7 @@ class PromoController extends Controller
             'media_id' => 'nullable|exists:media,id',
         ]);
 
-        $data = $request->all();
+        $data = $request->except(['image', 'media_id']);
         $data['slug'] = Str::slug($request->title);
 
         $promo = Promo::findOrFail($promo->id);
@@ -99,14 +97,26 @@ class PromoController extends Controller
             $promo->fill($data)->save();
 
             $this->attachMedia($promo, $request->file('image'), 'promos');
-        } elseif ($request->filled('media_id')) {
-            $media = Media::find($request->media_id);
-            if ($media) {
-                $data['image'] = $media->file_path;
+            } elseif ($request->filled('media_id')) {
+            $media = Media::findOrFail($request->media_id);
+            
+            if ($promo->image && Storage::disk('public')->exists($promo->image)) {
+                Storage::disk('public')->delete($promo->image);
             }
+
+            DB::table('media_usages')
+                ->where('model_type', get_class($promo))
+                ->where('model_id', $promo->id)
+                ->delete();
+
+            $data['image'] = $media->filepath;
+            $promo->update($data);
+
+            $this->attachExistingMedia($promo, $media->id);
+        } else {
+            $promo->update($data);
         }
-        $promo->update($data);
-        
+            
         return redirect()->route('admin.promos.index')->with('success', 'Promo berhasil diperbarui.');
     }
 

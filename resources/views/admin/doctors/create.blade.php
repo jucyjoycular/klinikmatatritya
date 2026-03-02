@@ -118,11 +118,11 @@
                                     </div>
                                     <div class="col-md-3">
                                         <input type="time" name="schedule[0][start]" class="form-control"
-                                            step="200" placeholder="Jam buka" onchange="updateScheduleHours(this)">
+                                            step="60" placeholder="Jam buka" onchange="updateScheduleHours(this)">
                                     </div>
                                     <div class="col-md-3">
                                         <input type="time" name="schedule[0][end]" class="form-control"
-                                            step="900" placeholder="Jam tutup" onchange="updateScheduleHours(this)">
+                                            step="60" placeholder="Jam tutup" onchange="updateScheduleHours(this)">
                                         <input type="hidden" name="schedule[0][hours]" class="schedule-hours">
                                     </div>
                                 </div>

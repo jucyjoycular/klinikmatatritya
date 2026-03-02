@@ -147,12 +147,12 @@
 
                                         <div class="col-md-3">
                                             <input type="time" name="schedule[{{ $i }}][start]" class="form-control"
-                                                step="900" value="{{ $startTime }}" onchange="updateScheduleHours(this)">
+                                                step="60" value="{{ $startTime }}" onchange="updateScheduleHours(this)">
                                         </div>
 
                                         <div class="col-md-3">
                                             <input type="time" name="schedule[{{ $i }}][end]" class="form-control"
-                                                step="900" value="{{ $endTime }}" onchange="updateScheduleHours(this)">
+                                                step="60" value="{{ $endTime }}" onchange="updateScheduleHours(this)">
                                             <input type="hidden" name="schedule[{{ $i }}][hours]" class="schedule-hours"
                                                 value="{{ $schedule->hours }}">
                                         </div>
@@ -268,10 +268,10 @@ function addSchedule() {
                 </select>
             </div>
             <div class="col-md-3">
-                <input type="time" name="schedule[${scheduleIndex}][start]" class="form-control" step="900" onchange="updateScheduleHours(this)">
+                <input type="time" name="schedule[${scheduleIndex}][start]" class="form-control" step="60" onchange="updateScheduleHours(this)">
             </div>
             <div class="col-md-3">
-                <input type="time" name="schedule[${scheduleIndex}][end]" class="form-control" step="900" onchange="updateScheduleHours(this)">
+                <input type="time" name="schedule[${scheduleIndex}][end]" class="form-control" step="60" onchange="updateScheduleHours(this)">
                 <input type="hidden" name="schedule[${scheduleIndex}][hours]" class="schedule-hours">
             </div>
             <div class="col-md-2">
