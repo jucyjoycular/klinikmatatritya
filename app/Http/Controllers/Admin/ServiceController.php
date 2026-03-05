@@ -14,6 +14,14 @@ class ServiceController extends Controller
 {
     use HandlesMedia;
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.layanan')->only('index');
+        $this->middleware('permission:create.layanan')->only(['create', 'store']);
+        $this->middleware('permission:update.layanan')->only(['edit', 'update']);
+        $this->middleware('permission:delete.layanan')->only('destroy');
+    }
+
     public function index()
     {
         $services = Service::latest()->paginate(10);

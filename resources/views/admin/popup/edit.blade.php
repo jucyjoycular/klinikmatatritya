@@ -20,6 +20,7 @@
 </style>
 
 @section('content')
+    
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <div class="card border-0 shadow-sm">
@@ -65,9 +66,12 @@
                         <a href="{{ route('popup.edit') }}" class="btn btn-light">
                             Batal
                         </a>
-                        <button type="submit" class="btn btn-primary px-4">
-                            Simpan Perubahan
-                        </button>
+                        @can('update.popup')
+                            <button type="submit" class="btn btn-primary px-4">
+                                Simpan Perubahan
+                            </button>
+                        @endcan
+                        
                     </div>
 
                 </form>

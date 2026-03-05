@@ -40,7 +40,9 @@
                         <option value="1" {{ $setting->min_rating == 1 ? 'selected' : '' }}>Semua Rating</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                @can('update.review')
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>    
+                @endcan
             </form>
         </div>
     </div>

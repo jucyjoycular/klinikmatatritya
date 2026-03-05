@@ -19,19 +19,19 @@ class AdminAuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'name' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if ($request->input('username') === env('ADMIN_USERNAME', 'admin') && $request->input('password') === env('ADMIN_PASSWORD', 'password')) {
-            session(['is_admin' => true]);
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('admin.dashboard'));
-        }
+        }   
 
         return back()->withErrors([
-            'username' => 'The provided credentials do not match our records.',
-        ])->onlyInput('username');
+            'name' => 'The provided credentials do not match our records.',
+        ])->onlyInput('name');
     }
 
     public function logout(Request $request)

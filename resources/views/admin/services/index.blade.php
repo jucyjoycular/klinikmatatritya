@@ -7,9 +7,12 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header d-flex align-items-center justify-content-between bg-white py-3">
             <h6 class="fw-bold mb-0">Daftar Layanan</h6>
+            @can('create.layanan')
             <a href="{{ route('admin.services.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus me-1"></i> Tambah Baru
             </a>
+            @endcan
+           
         </div>
         <div class="card-body p-0">
 
@@ -49,8 +52,11 @@
                                     </div>
                                 </td>
                                 <td class="pe-4 text-end">
+                                    @can('update.layanan')
                                     <a href="{{ route('admin.services.edit', $service->id) }}"
                                         class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                                    @endcan
+                                    @can('delete.layanan')
                                     <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST"
                                         class="d-inline" onsubmit="return confirm('Yakin ingin menghapus layanan ini?')">
                                         @csrf
@@ -58,6 +64,7 @@
                                         <button type="submit" class="btn btn-sm btn-light text-danger"><i
                                                 class="fas fa-trash"></i></button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

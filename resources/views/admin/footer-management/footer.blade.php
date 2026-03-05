@@ -35,7 +35,8 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <button type="button" 
+                                @can('preview.footer')
+                                 <button type="button" 
                                     class="btn btn-info btn-sm btn-view" 
                                     data-id="{{ $section->id }}"
                                     data-slug="{{ $section->slug }}"
@@ -44,7 +45,8 @@
                                     data-image="{{ $section->image ?? '' }}"
                                     title="View & Edit">
                                     <i class="fas fa-eye me-1"></i> View
-                                </button>
+                                </button>    
+                                @endcan
                             </td>
                         </tr>
                         @empty
@@ -165,9 +167,11 @@
                     <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
                         <i class="fas fa-times me-1"></i>Batalkan
                     </button>
+                    @can('update.footer')
                     <button type="submit" class="btn btn-primary px-4" id="saveBtn">
                         <i class="fas fa-save me-1"></i>Simpan Perubahan
-                    </button>
+                    </button>    
+                    @endcan
                 </div>
             </form>
         </div>

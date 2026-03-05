@@ -82,9 +82,11 @@
     </div>
 
     <div class="mt-3">
+        @can('export.analytics')
         <button class="btn btn-success">
             Export CSV
-        </button>
+        </button>    
+        @endcan
     </div>
 </form>
 

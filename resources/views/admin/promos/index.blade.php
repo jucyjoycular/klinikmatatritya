@@ -10,9 +10,11 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="card-title mb-0 fw-bold">Daftar Promo</h5>
+                    @can('create.promo')
                     <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Tambah Promo
                     </a>
+                    @endcan
                 </div>
 
                 <div class="table-responsive">
@@ -55,10 +57,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('admin.promos.edit', $promo->id) }}" class="btn btn-sm btn-outline-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                    @can('update.promo')
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ route('admin.promos.edit', $promo->id) }}" class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    @endcan
+                                    @can('delete.promo')
                                         <form action="{{ route('admin.promos.destroy', $promo->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus promo ini?');">
                                             @csrf
                                             @method('DELETE')
@@ -66,7 +72,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
-                                    </div>
+                                    @endcan
                                 </td>
                             </tr>
                             @empty

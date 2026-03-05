@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class JobApplicationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.lamaran')->only(['index', 'show']);
+        $this->middleware('permission:delete.lamaran')->only('destroy');
+        $this->middleware('permission:update.lamaran')->only('reply');
+    }
+
     public function index(Request $request)
     {
         $query = JobApplication::with('career');

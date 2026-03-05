@@ -15,6 +15,14 @@ class PromoController extends Controller
 {
     use HandlesMedia;
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.promo')->only('index');
+        $this->middleware('permission:create.promo')->only(['create', 'store']);
+        $this->middleware('permission:update.promo')->only(['edit', 'update']);
+        $this->middleware('permission:delete.promo')->only('destroy');
+    }
+
     public function index()
     {
         $promos = Promo::latest()->paginate(10);

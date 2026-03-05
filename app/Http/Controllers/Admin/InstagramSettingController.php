@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class InstagramSettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.instagram')->only('index');
+        $this->middleware('permission:update.instagram')->only('update');
+    }
+
     public function index()
     {
         $setting = InstagramSetting::first();

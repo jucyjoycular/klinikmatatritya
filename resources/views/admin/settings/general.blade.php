@@ -295,9 +295,11 @@
                         <hr class="my-4">
 
                         <div class="d-flex justify-content-start">
+                        @can('update.setting')
                             <button type="submit" class="btn btn-primary fw-semibold px-4 py-2">
                                 Simpan Perubahan
-                            </button>
+                            </button>    
+                        @endcan
                         </div>
                     </form>
                 </div>

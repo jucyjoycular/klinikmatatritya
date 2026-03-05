@@ -28,7 +28,9 @@
                         min="1" max="100">
                     <div class="form-text">Maksimal 100 data.</div>
                 </div>
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                @can('update.instagram')
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                @endcan
             </form>
         </div>
     </div>

@@ -5,9 +5,11 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">Pilihan Asuransi</h1>
+        @can('create.asuransi')
         <a href="{{ route('admin.insurances.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Tambah Asuransi
-        </a>
+        </a>    
+        @endcan
     </div>
 
     <div class="card mb-4 shadow">
@@ -32,10 +34,13 @@
                                 </td>
                                 <td>{{ $insurance->name ?? '-' }}</td>
                                 <td>
+                                    @can('update.asuransi')
                                     <a href="{{ route('admin.insurances.edit', $insurance->id) }}"
                                         class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
+                                    @endcan
+                                    @can('delete.asuransi')
                                     <form action="{{ route('admin.insurances.destroy', $insurance->id) }}" method="POST"
                                         class="d-inline"
                                         onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
@@ -45,6 +50,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

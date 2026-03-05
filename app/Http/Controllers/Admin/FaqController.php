@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.faq')->only('index');
+        $this->middleware('permission:create.kategori-faq')->only(['create', 'store']);
+        $this->middleware('permission:create.faq')->only(['create', 'store']);
+        $this->middleware('permission:update.faq')->only(['edit', 'update']);
+        $this->middleware('permission:delete.faq')->only('destroy');
+    }
+
     public function index()
     {
         $faqs = Faq::latest()->paginate(10);

@@ -7,9 +7,11 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header d-flex align-items-center justify-content-between bg-white py-3">
             <h6 class="fw-bold mb-0">Daftar Dokter</h6>
+            @can('create.doctor')
             <a href="{{ route('admin.doctors.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus me-1"></i> Tambah Baru
-            </a>
+            </a>    
+            @endcan
         </div>
         <div class="card-body p-0">
 
@@ -50,15 +52,19 @@
                                     </span>
                                 </td>
                                 <td class="pe-4 text-end">
-                                    <a href="{{ route('admin.doctors.edit', $doctor->id) }}"
-                                        class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('admin.doctors.destroy', $doctor->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-light text-danger"><i
+                                    @can('update.doctor')
+                                        <a href="{{ route('admin.doctors.edit', $doctor->id) }}"
+                                            class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                                    @endcan
+                                    @can('delete.doctor')
+                                        <form action="{{ route('admin.doctors.destroy', $doctor->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-light text-danger"><i
                                                 class="fas fa-trash"></i></button>
-                                    </form>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

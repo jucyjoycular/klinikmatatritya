@@ -18,11 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         // Run all class-based seeders
         $this->call([
-            AdminUserSeeder::class,
+            PermissionSeeder::class,
             HeroSeeder::class,
             FooterSectionSeeder::class,
             FaqSeeder::class,
             AnalyticsSeeder::class,
+            AdminUserSeeder::class
         ]);
 
         // Run factory seeders

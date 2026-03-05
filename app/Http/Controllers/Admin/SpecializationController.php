@@ -39,6 +39,14 @@ class SpecializationController extends Controller
         ];
     }
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.spesialisasi')->only('index');
+        $this->middleware('permission:create.spesialisasi')->only(['create', 'store']);
+        $this->middleware('permission:update.spesialisasi')->only(['edit', 'update']);
+        $this->middleware('permission:delete.spesialisasi')->only('destroy');
+    }
+
     public function index()
     {
         $specializations = Specialization::latest()->paginate(10);

@@ -198,115 +198,159 @@
                 <span>Dashboard</span>
             </a>
 
+            {{-- @can('read.user') --}}
+            <a href="{{ route('admin.users.index') }}" class="menu-item @if (request()->routeIs('admin.users.*')) active @endif">
+                <i class="fas fa-users"></i>
+                <span>Manajemen Users</span>
+            </a>
+            {{-- @endcan --}}
+
+            @can('read.hero')
             <a href="{{ route('admin.hero.edit') }}" class="menu-item @if (request()->routeIs('admin.hero.*')) active @endif">
                 <i class="fas fa-user-md"></i>
                 <span>Hero</span>
             </a>
-
+            @endcan
+           
+            @can('read.popup')
             <a href="{{ route('popup.edit') }}" class="menu-item @if (request()->routeIs('admin.popup.*')) active @endif">
                 <i class="fas fa-user-md"></i>
                 <span>Main Popup Home</span>
             </a>
-
+            @endcan
+           
+            @can('read.doctor')
             <a href="{{ route('admin.doctors.index') }}"
                 class="menu-item @if (request()->routeIs('admin.doctors.*')) active @endif">
                 <i class="fas fa-user-md"></i>
                 <span>Dokter</span>
             </a>
+            @endcan
 
+            @can('read.media')
             <a href="{{ route('admin.media.index') }}"
                 class="menu-item @if (request()->routeIs('admin.media.*')) active @endif">
                 <i class="fas fa-photo-video"></i>
                 <span>Media</span>
             </a>
+            @endcan
 
+            @can('read.layanan')
             <a href="{{ route('admin.services.index') }}"
                 class="menu-item @if (request()->routeIs('admin.services.*')) active @endif">
                 <i class="fas fa-hand-holding-medical"></i>
                 <span>Layanan</span>
-            </a>
+            </a>    
+            @endcan
 
+            @can('read.faq')
             <a href="{{ route('admin.faqs.index') }}"
                 class="menu-item @if (request()->routeIs('admin.faqs.*')) active @endif">
                 <i class="fas fa-question-circle"></i>
                 <span>FAQ</span>
-            </a>
+            </a>    
+            @endcan
 
+            @can('read.promo')
             <a href="{{ route('admin.promos.index') }}"
                 class="menu-item @if (request()->routeIs('admin.promos.*')) active @endif">
                 <i class="fas fa-tags"></i>
                 <span>Promo</span>
-            </a>
-
+            </a>   
+            @endcan
+            
+            @can('read.review')
             <a href="{{ route('admin.review-settings.index') }}"
                 class="menu-item @if (request()->routeIs('admin.review-settings.*')) active @endif">
                 <i class="fas fa-star"></i>
                 <span>Review Settings</span>
-            </a>
+            </a>   
+            @endcan
 
+            @can('read.asuransi')
             <a href="{{ route('admin.insurances.index') }}"
                 class="menu-item @if (request()->routeIs('admin.insurances.*')) active @endif">
                 <i class="fas fa-hand-holding-heart"></i>
                 <span>Pilihan Asuransi</span>
             </a>
+            @endcan
 
+            @can('read.spesialisasi')
             <a href="{{ route('admin.specializations.index') }}"
                 class="menu-item @if (request()->routeIs('admin.specializations.*')) active @endif">
                 <i class="fas fa-stethoscope"></i>
                 <span>Spesialisasi</span>
             </a>
+            @endcan
 
+            @can('read.instagram')
             <a href="{{ route('admin.instagram-settings.index') }}"
                 class="menu-item @if (request()->routeIs('admin.instagram-settings.*')) active @endif">
                 <i class="fab fa-instagram"></i>
                 <span>Instagram Settings</span>
             </a>
+            @endcan
 
+            @can('read.artikel')
             <a href="{{ route('admin.articles.index') }}"
                 class="menu-item @if (request()->routeIs('admin.articles.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Artikel</span>
             </a>
-
+            @endcan
 
             {{-- <a href="{{ route('admin.testimonials.index') }}" class="menu-item @if (request()->routeIs('admin.testimonials.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Testimonials</span>
             </a> --}}
 
-            <a href="{{ route('admin.careers.index') }}"
+            @can('read.karir')
+             <a href="{{ route('admin.careers.index') }}"
                 class="menu-item @if (request()->routeIs('admin.careers.*')) active @endif">
                 <i class="fas fa-briefcase"></i>
                 <span>Karir</span>
-            </a>
-
+            </a> 
+            @endcan
+           
+            @can('read.lamaran')
             <a href="{{ route('admin.job-applications.index') }}"
                 class="menu-item @if (request()->routeIs('admin.job-applications.*')) active @endif">
                 <i class="fas fa-file-alt"></i>
                 <span>Lamaran Masuk</span>
             </a>
+            @endcan
 
+            @can('read.analytics')
             <a href="{{ route('admin.settings.analytics') }}"
                 class="menu-item @if (request()->routeIs('admin.analytics.*')) active @endif">
                 <i class="fas fa-newspaper"></i>
                 <span>Analytics</span>
-            </a>
+            </a>   
+            @endcan
 
+            @can('read.mail')
             <a href="{{ route('admin.settings.mail') }}"
                 class="menu-item @if (request()->routeIs('admin.settings.mail')) active @endif">
                 <i class="fas fa-envelope"></i>
                 <span>Mail Settings</span>
-            </a>
+            </a> 
+            @endcan
+            
+            @can('read.setting')
             <a href="{{ route('admin.settings.general') }}"
                 class="menu-item @if (request()->routeIs('admin.settings.general')) active @endif">
                 <i class="fas fa-cogs"></i>
                 <span>General Settings</span>
             </a>
+            @endcan
+        
+            @can('read.footer')
             <a href="{{ route('admin.settings.footer') }}"
                 class="menu-item @if (request()->routeIs('admin.settings.footer')) active @endif">
                 <i class="fa-solid fa-gear"></i>
                 <span>Footer Settings</span>
-            </a>
+            </a> 
+            @endcan
         </nav>
 
         <div class="border-top p-3">
@@ -332,8 +376,8 @@
                 <button class="btn d-flex align-items-center gap-2 border-0 bg-transparent" type="button"
                     data-bs-toggle="dropdown">
                     <div class="d-none d-md-block text-end">
-                        <div class="fw-bold small">Admin User</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">admin@tritya.com</div>
+                        <div class="fw-bold small">{{ Auth::user()->name }}</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">{{ Auth::user()->email }}</div>
                     </div>
                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold"
                         style="width: 40px; height: 40px;">

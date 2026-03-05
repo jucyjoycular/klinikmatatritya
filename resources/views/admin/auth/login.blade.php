@@ -92,8 +92,8 @@
         <form action="{{ route('admin.login') }}" method="POST">
             @csrf
             <div class="mb-3">
-                <label class="form-label small fw-bold text-secondary">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Username" required>
+                <label class="form-label small fw-bold text-secondary">Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Name" required>
             </div>
 
             <div class="mb-4">
