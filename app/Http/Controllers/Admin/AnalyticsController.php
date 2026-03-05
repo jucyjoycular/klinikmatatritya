@@ -9,10 +9,14 @@ use Carbon\Carbon;
 
 class AnalyticsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.analytics')->only('index');
+        $this->middleware('permission:export.analytics')->only('exportCsv');
+    }
+
     public function index(GA4Service $analytics)
     {   
-
-
         $data = $analytics->getReport();
 
         $organicSearch = $analytics->getChannelReport('Organic Search');

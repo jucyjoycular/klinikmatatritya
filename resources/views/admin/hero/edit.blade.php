@@ -78,7 +78,9 @@
     <input type="text" name="button_link" value="{{ old('button_link',$hero->button_link) }}" class="form-control">
 </div>
 
-<button type="submit" class="btn btn-primary">Simpan</button>
+@can('update.hero')
+    <button type="submit" class="btn btn-primary">Simpan</button>
+@endcan
 </form>
 
 {{-- Model browse media --}}

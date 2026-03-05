@@ -12,9 +12,15 @@ use Illuminate\Support\Facades\Storage;
 class InsuranceController extends Controller
 {
     use HandlesMedia;
-    /**
-     * Display a listing of the resource.
-     */
+   
+    public function __construct()
+    {
+        $this->middleware('permission:read.asuransi')->only('index');
+        $this->middleware('permission:create.asuransi')->only(['create', 'store']);
+        $this->middleware('permission:update.asuransi')->only(['edit', 'update']);
+        $this->middleware('permission:delete.asuransi')->only('destroy');
+    }
+
     public function index()
     {
         $insurances = Insurance::latest()->paginate(10);

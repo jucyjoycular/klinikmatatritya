@@ -8,9 +8,11 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header d-flex align-items-center justify-content-between bg-white py-3">
             <h6 class="fw-bold mb-0">Daftar Spesialisasi</h6>
+            @can('create.spesialisasi')
             <a href="{{ route('admin.specializations.create') }}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus me-1"></i> Tambah Baru
-            </a>
+            </a>    
+            @endcan
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -48,8 +50,11 @@
                                         {{ $specialization->description }}</div>
                                 </td>
                                 <td class="pe-4 text-end">
-                                    <a href="{{ route('admin.specializations.edit', $specialization->id) }}"
-                                        class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                                    @can('update.spesialisasi')
+                                        <a href="{{ route('admin.specializations.edit', $specialization->id) }}"
+                                            class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                                    @endcan
+                                    @can('delete.spesialisasi')
                                     <form action="{{ route('admin.specializations.destroy', $specialization->id) }}"
                                         method="POST" class="d-inline"
                                         onsubmit="return confirm('Yakin ingin menghapus spesialisasi ini?')">
@@ -58,6 +63,7 @@
                                         <button type="submit" class="btn btn-sm btn-light text-danger"><i
                                                 class="fas fa-trash"></i></button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

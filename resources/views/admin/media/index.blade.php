@@ -184,9 +184,11 @@
                             <button class="action-btn" onclick="previewImage('{{ Storage::url($item->filepath) }}')" title="Lihat">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="action-btn delete" onclick="confirmDelete({{ $item->id }})" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            @can('delete.media')
+                                <button class="action-btn delete" onclick="confirmDelete({{ $item->id }})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            @endcan
                         </div>
                     </td>
                 </tr>

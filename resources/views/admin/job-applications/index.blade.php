@@ -88,6 +88,7 @@
                                     <a href="{{ route('admin.job-applications.show', $app->id) }}"
                                         class="btn btn-sm btn-light text-primary me-1" title="Lihat Detail"><i
                                             class="fas fa-eye"></i></a>
+                                    @can('delete.lamaran')
                                     <form action="{{ route('admin.job-applications.destroy', $app->id) }}" method="POST"
                                         class="d-inline" onsubmit="return confirm('Yakin ingin menghapus lamaran ini?')">
                                         @csrf
@@ -95,6 +96,7 @@
                                         <button type="submit" class="btn btn-sm btn-light text-danger" title="Hapus"><i
                                                 class="fas fa-trash"></i></button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

@@ -27,16 +27,20 @@ Route::prefix('admin')->group(function () {
     Route::get('/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('admin.logout');
 
     // Protected Routes
-    Route::middleware('auth.admin')->group(function () {
+    Route::middleware('auth')->group(function () {
        
          Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('admin.dashboard');
+
+        Route::resource('users', App\Http\Controllers\Admin\UserController::class)->names('admin.users');
+        Route::get('user-permissions/{user}', [App\Http\Controllers\Admin\UserPermissionController::class, 'edit'])->name('admin.permissions.edit');
+        Route::put('user-permissions/{user}', [App\Http\Controllers\Admin\UserPermissionController::class, 'update'])->name('admin.permissions.update');
 
             Route::get('/admin/analytics/export-csv',
                     [AnalyticsController::class, 'exportCsv']
                 )->name('admin.analytics.export.csv');
 
-       Route::get('popup', [PopupSettingController::class, 'edit'])->name('popup.edit');
+        Route::get('popup', [PopupSettingController::class, 'edit'])->name('popup.edit');
         Route::post('popup', [PopupSettingController::class, 'update'])->name('popup.update');
 
         Route::get('hero', [App\Http\Controllers\Admin\HeroController::class, 'edit'])

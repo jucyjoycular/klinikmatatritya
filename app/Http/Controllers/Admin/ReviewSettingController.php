@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ReviewSettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.review')->only('index');
+        $this->middleware('permission:update.review')->only('update');
+    }
+
     public function index()
     {
         $setting = ReviewSetting::first();

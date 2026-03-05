@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.media')->only('index', 'list', 'usage');
+        $this->middleware('permission:delete.media')->only('destroy');
+    }
+
     public function index()
     {
         $media = Media::latest()->paginate(10);

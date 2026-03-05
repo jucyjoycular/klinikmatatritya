@@ -8,12 +8,16 @@
         <div class="card-header d-flex align-items-center justify-content-between bg-white py-3">
             <h6 class="fw-bold mb-0">Daftar FAQ</h6>
             <div>
+                @can('create.kategori-faq')
                 <a href="{{ route('admin.faq-categories.index') }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-edit me-1"></i> Edit Kategori
                 </a>
+                @endcan
+                @can('create.faq')
                 <a href="{{ route('admin.faqs.create') }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus me-1"></i> Tambah Baru
                 </a>
+                @endcan
             </div>
         </div>
         <div class="card-body p-0">
@@ -56,15 +60,19 @@
                                     @endif
                                 </td>
                                 <td class="pe-4 text-end">
-                                    <a href="{{ route('admin.faqs.edit', $faq->id) }}"
-                                        class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST"
-                                        class="d-inline" onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-light text-danger"><i
+                                    @can('update.faq')
+                                        <a href="{{ route('admin.faqs.edit', $faq->id) }}"
+                                            class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                                    @endcan
+                                    @can('delete.faq')
+                                        <form action="{{ route('admin.faqs.destroy', $faq->id) }}" method="POST"
+                                            class="d-inline" onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-light text-danger"><i
                                                 class="fas fa-trash"></i></button>
-                                    </form>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

@@ -9,6 +9,14 @@ use Illuminate\Support\Str;
 
 class CareerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:read.career')->only('index');
+        $this->middleware('permission:create.career')->only(['create', 'store']);
+        $this->middleware('permission:update.career')->only(['edit', 'update']);
+        $this->middleware('permission:delete.career')->only('destroy');
+    }
+
     public function index()
     {
         $careers = Career::latest()->paginate(10);

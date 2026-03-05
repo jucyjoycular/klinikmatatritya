@@ -14,6 +14,12 @@ class PopupSettingController extends Controller
 {
     use HandlesMedia;
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.popup')->only('edit');
+        $this->middleware('permission:update.popup')->only('update');
+    }
+
     public function edit()
 {
     $popup = PopupSetting::firstOrCreate(['id' => 1]);

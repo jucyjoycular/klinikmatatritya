@@ -7,9 +7,11 @@
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
         <h6 class="mb-0 fw-bold">Daftar Lowongan Karir</h6>
+        @can('create.career')
         <a href="{{ route('admin.careers.create') }}" class="btn btn-sm btn-primary">
             <i class="fas fa-plus me-1"></i> Tambah Karir
         </a>
+        @endcan
     </div>
     <div class="card-body p-0"> 
 
@@ -43,12 +45,16 @@
                             @endif
                         </td>
                         <td class="pe-4 text-end">
-                            <a href="{{ route('admin.careers.edit', $career->id) }}" class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('admin.careers.destroy', $career->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus karir ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-light text-danger"><i class="fas fa-trash"></i></button>
-                            </form>
+                            @can('update.career')
+                                <a href="{{ route('admin.careers.edit', $career->id) }}" class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
+                            @endcan
+                            @can('delete.career')
+                                <form action="{{ route('admin.careers.destroy', $career->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus karir ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-light text-danger"><i class="fas fa-trash"></i></button>
+                                </form>
+                            @endcan
                         </td>
                     </tr>
                     @empty

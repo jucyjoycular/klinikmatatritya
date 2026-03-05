@@ -60,10 +60,11 @@
                             <input type="text" class="form-control" name="mail_from_name" value="{{ $mail['mail_from_name'] ?? 'Klinik Mata Tritya' }}" placeholder="Klinik Mata Tritya">
                         </div>
                     </div>
-
+                    @can('update.mail')
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary px-4"><i class="fas fa-save me-2"></i> Save Settings</button>
-                    </div>
+                    </div>    
+                    @endcan
                 </form>
             </div>
         </div>

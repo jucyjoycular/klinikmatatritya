@@ -14,6 +14,12 @@ class HeroController extends Controller
 {
     use HandlesMedia;
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.hero')->only('edit');
+        $this->middleware('permission:update.hero')->only('update');
+    }
+
     public function edit()
     {
         $hero = Hero::first();

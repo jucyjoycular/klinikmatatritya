@@ -14,6 +14,17 @@ class SettingsController extends Controller
 {
     use HandlesMedia;
 
+    public function __construct()
+    {
+        $this->middleware('permission:read.mail')->only(['mail']);
+        $this->middleware('permission:update.mail')->only(['updateMail']);
+        $this->middleware('permission:read.setting')->only(['general']);
+        $this->middleware('permission:update.setting')->only(['updateGeneral']);
+        $this->middleware('permission:read.footer')->only(['getFooterIndex']);
+        $this->middleware('permission:preview.footer')->only(['getFooterItems']);
+        $this->middleware('permission:update.footer')->only(['updateFooterSection']);
+    }
+
     public function logo()
     {
         $logo = Settings::where('key', 'site_logo')->first();

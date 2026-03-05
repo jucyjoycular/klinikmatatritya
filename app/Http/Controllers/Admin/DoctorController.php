@@ -16,6 +16,14 @@ class DoctorController extends Controller
 {
 
     use HandlesMedia;
+
+    public function __construct()
+    {
+        $this->middleware('permission:read.doctor')->only('index');
+        $this->middleware('permission:create.doctor')->only(['create', 'store']);
+        $this->middleware('permission:update.doctor')->only(['edit', 'update']);
+        $this->middleware('permission:delete.doctor')->only('destroy');
+    }
     
     public function index()
     {
