@@ -27,7 +27,7 @@ class DoctorController extends Controller
     
     public function index()
     {
-        $doctors = Doctor::latest()->paginate(10);
+        $doctors = Doctor::orderBy('id', 'asc')->get();
         return view('admin.doctors.index', compact('doctors'));
     }
 
@@ -119,7 +119,7 @@ class DoctorController extends Controller
             $data['photo'] = $media->filepath;
             $doctor->update($data);
         } elseif ($request->hasFile('photo')) {
-             if ($doctor && Storage::disk('public')->exists($doctor->photo)) {
+             if ($doctor->photo && Storage::disk('public')->exists($doctor->photo)) {
                 Storage::disk('public')->delete($doctor->photo);
 
                 DB::table('media_usages')->where('model_type', get_class($doctor))

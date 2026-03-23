@@ -8,7 +8,7 @@
     <!-- Foto -->
     <div style="position: absolute; top: -45px; left: 50%; transform: translateX(-50%);">
             <img src="{{ $photo ?? 'https://via.placeholder.com/95' }}"
-                style="width:95px; height:95px; border-radius:50%; object-fit:cover; 
+                style="width:95px; height:95px; border-radius:50%; object-fit:cover; object-position:center top;
                         border:5px solid white;">
     </div>
 
