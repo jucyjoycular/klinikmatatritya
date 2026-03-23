@@ -239,10 +239,8 @@
                     </div>
                     <!-- Pagination -->
                     <div class="d-flex justify-content-end mt-4 gap-2">
-                        <!--  <button class="nav-circle-btn equip-prev bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                            class="fas fa-chevron-left"></i></button>
-                                                    <button class="nav-circle-btn equip-next bg-white shadow-sm" style="width:40px;height:40px;"><i
-                                                            class="fas fa-chevron-right"></i></button> -->
+                        <button class="nav-circle-btn equip-prev"> <i class="fas fa-chevron-left"></i> </button>
+                        <button class="nav-circle-btn equip-next"> <i class="fas fa-chevron-right"></i> </button>
                     </div>
                 </div>
             </div>
