@@ -23,14 +23,14 @@
                             <th class="border-0 py-3" data-priority="4">Foto</th>
                             <th class="border-0 py-3" data-priority="2">Nama Dokter</th>
                             <th class="border-0 py-3">Spesialisasi</th>
-                            <th class="border-0 py-3 pe-4 text-end" data-priority="3">Aksi</th>
+                            <th class="border-0 py-3 pe-4 text-center" data-priority="3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($doctors as $doctor)
                             <tr>
                                 <td class="ps-4">
-                                    {{ $loop->iteration + ($doctors->currentPage() - 1) * $doctors->perPage() }}</td>
+                                    {{ $loop->iteration }}</td>
                                 <td>
                                     @if ($doctor->photo)
                                         <img src="{{ asset('storage/' . $doctor->photo) }}" alt="Photo"
@@ -51,7 +51,7 @@
                                         {{ $doctor->specialty ?? 'Umum' }}
                                     </span>
                                 </td>
-                                <td class="pe-4 text-end">
+                                <td class="pe-4 text-center">
                                     @can('update.doctor')
                                         <a href="{{ route('admin.doctors.edit', $doctor->id) }}"
                                             class="btn btn-sm btn-light text-primary me-1"><i class="fas fa-edit"></i></a>
@@ -89,6 +89,10 @@
                 pageLength: 10,
                 lengthChange: true,
                 autoWidth: false,
+                columnDefs: [
+                    { orderable: false, targets: [1, 4] },
+                    { searchable: false, targets: [0, 1, 4] }
+                ],
                 language: {
                     search: "Cari:",
                     lengthMenu: "Tampilkan _MENU_ data",

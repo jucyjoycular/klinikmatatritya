@@ -1149,7 +1149,7 @@
         const equipSwiper = new Swiper('.equipSwiper', {
             slidesPerView: 'auto',
             spaceBetween: 20,
-            loop: true,
+            loop: false,
             navigation: {
                 nextEl: '.equip-next',
                 prevEl: '.equip-prev',

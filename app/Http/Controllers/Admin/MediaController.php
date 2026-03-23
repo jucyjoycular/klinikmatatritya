@@ -30,6 +30,36 @@ class MediaController extends Controller
         return response()->json($mediaList);
     }
 
+    public function create()
+    {
+        return view('admin.media.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:jpg,png,webp'
+        ]);
+
+        $file = $request->file('file');
+        $hash = md5_file($file->getRealPath());
+
+        // cek apakah file sudah ada
+        if (Media::where('hash', $hash)->exists()) {
+            return redirect()->route('admin.media.index')->with('error', 'File sudah ada di media library.');
+        }
+
+        $filePath = $file->store('media', 'public');
+
+        $media = Media::create([
+            'filename' => $file->getClientOriginalName(),
+            'filepath' => $filePath,
+            'hash' => $hash
+        ]);
+
+        return redirect()->route('admin.media.index')->with('success', 'Media berhasil diupload.');
+    }
+
     public function destroy(Request $request, $id)
     {
         $media = Media::with('usages.model')->findOrFail($id);
