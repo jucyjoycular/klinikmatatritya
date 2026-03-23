@@ -159,6 +159,12 @@
 @if($media->count() > 0)
     <div class="media-card">
         <table class="table align-middle mb-0">
+        <div class="card-header d-flex align-items-center justify-content-between bg-white py-3">
+            <h6 class="fw-bold mb-0">Daftar Media</h6>
+                <a href="{{ route('admin.media.create') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus me-1"></i> Tambah Baru
+                </a>    
+        </div>
             <thead>
                 <tr>
                     <th style="width: 70px;">No</th>
